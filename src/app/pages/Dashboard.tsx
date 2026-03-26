@@ -1,28 +1,29 @@
 import { Link } from "react-router";
+import { Target, Users, TrendingUp, BarChart3, TableProperties, AlertCircle, GitCompare, BookOpen } from "lucide-react";
 
 export function Dashboard() {
   return (
-    <div className="max-w-7xl mx-auto px-8 py-8">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       {/* Filter Bar */}
-      <div className="bg-white border-2 border-gray-800 p-6 mb-8">
-        <div className="grid grid-cols-3 gap-6">
+      <div className="mb-6 rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+        <div className="grid gap-6 md:grid-cols-3">
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-2">State</label>
-            <select className="w-full px-4 py-3 bg-white border-2 border-gray-800 text-gray-900">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
+            <select className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100">
               <option>Victoria</option>
               <option>New South Wales</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-2">Region</label>
-            <select className="w-full px-4 py-3 bg-white border-2 border-gray-800 text-gray-900">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">Region</label>
+            <select className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100">
               <option>Melbourne CBD</option>
               <option>Greater Melbourne</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-2">Age Group</label>
-            <select className="w-full px-4 py-3 bg-white border-2 border-gray-800 text-gray-900">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">Age Group</label>
+            <select className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100">
               <option>12 months</option>
               <option>24 months</option>
               <option>5 years</option>
@@ -32,66 +33,89 @@ export function Dashboard() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-6 mb-8">
-        <div className="bg-white border-2 border-gray-800 p-6">
-          <div className="text-sm font-bold text-gray-600 mb-2">Coverage Rate</div>
+      <div className="mb-6 grid gap-6 md:grid-cols-3">
+        <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-xl">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="text-sm font-semibold text-blue-100">Coverage Rate</div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20">
+              <Target className="h-5 w-5" />
+            </div>
+          </div>
           <div className="text-4xl font-bold mb-1">93.2%</div>
-          <div className="text-sm text-gray-600">Current area</div>
+          <div className="text-sm text-blue-100">Current area</div>
         </div>
-        <div className="bg-white border-2 border-gray-800 p-6">
-          <div className="text-sm font-bold text-gray-600 mb-2">Child Population</div>
-          <div className="text-4xl font-bold mb-1">45,230</div>
-          <div className="text-sm text-gray-600">In selected region</div>
+        <div className="rounded-2xl border-l-4 border-green-500 bg-white p-6 shadow-lg ring-1 ring-slate-200">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="text-sm font-semibold text-slate-600">Child Population</div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
+              <Users className="h-5 w-5 text-green-600" />
+            </div>
+          </div>
+          <div className="mb-1 text-4xl font-bold text-slate-900">45,230</div>
+          <div className="text-sm text-slate-500">In selected region</div>
         </div>
-        <div className="bg-white border-2 border-gray-800 p-6">
-          <div className="text-sm font-bold text-gray-600 mb-2">State Average</div>
-          <div className="text-4xl font-bold mb-1">94.5%</div>
-          <div className="text-sm text-gray-600">Victoria</div>
+        <div className="rounded-2xl border-l-4 border-amber-500 bg-white p-6 shadow-lg ring-1 ring-slate-200">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="text-sm font-semibold text-slate-600">State Average</div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100">
+              <TrendingUp className="h-5 w-5 text-amber-600" />
+            </div>
+          </div>
+          <div className="mb-1 text-4xl font-bold text-slate-900">94.5%</div>
+          <div className="text-sm text-slate-500">Victoria</div>
         </div>
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-2 gap-8 mb-8">
+      <div className="mb-6 grid gap-6 lg:grid-cols-2">
         {/* Chart Area */}
-        <div className="bg-white border-2 border-gray-800 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Coverage by Area</h2>
-          <div className="border-2 border-dashed border-gray-400 bg-gray-50 aspect-video flex items-center justify-center">
+        <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+          <h2 className="mb-4 flex items-center gap-3 text-xl font-bold text-slate-900">
+            <BarChart3 className="h-6 w-6 text-blue-600" />
+            Coverage by Area
+          </h2>
+          <div className="flex aspect-video items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-br from-slate-50 to-slate-100">
             <div className="text-center">
-              <div className="w-16 h-16 border-2 border-gray-400 bg-gray-200 mx-auto mb-3" />
-              <span className="text-sm font-bold text-gray-500">Bar Chart Visualization</span>
-              <p className="text-xs text-gray-400 mt-1">Coverage % by region</p>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100">
+                <BarChart3 className="h-8 w-8 text-blue-600" />
+              </div>
+              <span className="text-sm font-semibold text-slate-600">Visualization placeholder</span>
+              <p className="mt-1 text-xs text-slate-500">Designed for a live regional coverage chart</p>
             </div>
           </div>
         </div>
 
         {/* Map/List Area */}
-        <div className="bg-white border-2 border-gray-800 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Regional Breakdown</h2>
-          <div className="bg-gray-50 border-2 border-gray-800 p-4">
+        <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+          <h2 className="mb-4 flex items-center gap-3 text-xl font-bold text-slate-900">
+            <TableProperties className="h-6 w-6 text-emerald-600" />
+            Regional Breakdown
+          </h2>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <div className="space-y-3">
-              <div className="flex justify-between items-center pb-3 border-b-2 border-gray-800">
-                <span className="font-bold text-gray-900">Area Name</span>
-                <span className="font-bold text-gray-900">Coverage</span>
+              <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                <span className="font-semibold text-slate-900">Area Name</span>
+                <span className="font-semibold text-slate-900">Coverage</span>
               </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-700">Melbourne CBD</span>
-                <span className="font-bold">95.2%</span>
+              <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm">
+                <span className="text-slate-700">Melbourne CBD</span>
+                <span className="font-bold text-green-600">95.2%</span>
               </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-700">Port Melbourne</span>
-                <span className="font-bold">93.8%</span>
+              <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm">
+                <span className="text-slate-700">Port Melbourne</span>
+                <span className="font-bold text-amber-600">93.8%</span>
               </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-700">Southbank</span>
-                <span className="font-bold">92.5%</span>
+              <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm">
+                <span className="text-slate-700">Southbank</span>
+                <span className="font-bold text-amber-600">92.5%</span>
               </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-700">Docklands</span>
-                <span className="font-bold">91.3%</span>
+              <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm">
+                <span className="text-slate-700">Docklands</span>
+                <span className="font-bold text-red-600">91.3%</span>
               </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-700">Carlton</span>
-                <span className="font-bold">90.7%</span>
+              <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2 shadow-sm">
+                <span className="text-slate-700">Carlton</span>
+                <span className="font-bold text-red-600">90.7%</span>
               </div>
             </div>
           </div>
@@ -99,26 +123,33 @@ export function Dashboard() {
       </div>
 
       {/* Insight Box */}
-      <div className="bg-gray-50 border-2 border-gray-800 p-6 mb-8">
-        <h3 className="font-bold text-gray-900 mb-2">Plain-Language Summary</h3>
-        <p className="text-gray-700 leading-relaxed">
+      <div className="mb-6 rounded-2xl border-l-4 border-blue-500 bg-blue-50 p-6 shadow-md">
+        <div className="flex gap-3">
+          <AlertCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-blue-600" />
+          <div>
+            <h3 className="mb-2 font-bold text-slate-900">Plain-Language Summary</h3>
+            <p className="leading-relaxed text-slate-700">
           This area has a vaccination coverage rate of 93.2%, which is <strong>below the state average</strong> of 94.5%. 
           To reach herd immunity thresholds, coverage rates of 95% or higher are recommended for most childhood vaccines.
-        </p>
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4 justify-center">
+      <div className="flex flex-wrap justify-center gap-4">
         <Link 
           to="/compare" 
-          className="px-6 py-3 bg-white border-2 border-gray-800 text-gray-900 font-bold"
+          className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-300 bg-white px-6 py-3 font-semibold text-slate-800 shadow-sm transition-all hover:border-slate-400 hover:bg-slate-50"
         >
+          <GitCompare className="h-5 w-5" />
           Compare Areas
         </Link>
         <Link 
           to="/learn" 
-          className="px-6 py-3 bg-white border-2 border-gray-800 text-gray-900 font-bold"
+          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-md transition-all hover:bg-blue-700"
         >
+          <BookOpen className="h-5 w-5" />
           Learn More
         </Link>
       </div>
