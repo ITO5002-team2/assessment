@@ -1,27 +1,23 @@
 import { Link } from "react-router";
 import { Shield, Database, BarChart2, ArrowRight } from "lucide-react";
+import { PageContainer } from "../components/PageContainer";
+import { PageHero } from "../components/PageHero";
+import { SectionCard } from "../components/SectionCard";
 
 export function Home() {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      {/* Hero Section */}
-      <div className="mb-8 rounded-3xl bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 p-12 text-white shadow-2xl">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-white/15 backdrop-blur">
-            <Shield className="h-10 w-10 text-white" />
-          </div>
-          <h1 className="mb-4 text-4xl font-bold">
-            Understand childhood vaccination coverage in your area
-          </h1>
-          <p className="text-lg leading-relaxed text-blue-50">
-            This dashboard uses official public data to help parents, carers, and community health stakeholders 
-            understand vaccination coverage rates for young children across Victoria and Australia.
-          </p>
-        </div>
-      </div>
+    <PageContainer className="py-10">
+      <PageHero
+        title="Understand childhood vaccination coverage in your area"
+        description="This dashboard uses official public data to help parents, carers, and community health stakeholders understand vaccination coverage rates for young children across Victoria and Australia."
+        icon={Shield}
+        className="bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 p-12 shadow-2xl"
+        contentClassName="mx-auto max-w-3xl"
+        iconBadgeClassName="mb-6 h-20 w-20 bg-white/15"
+      />
 
       {/* Area Selection */}
-      <div className="mb-8 rounded-3xl bg-white p-10 shadow-lg ring-1 ring-slate-200">
+      <SectionCard className="mb-8 p-10">
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold text-slate-900">Select Your Area</h2>
           <p className="mt-2 text-slate-600">
@@ -55,10 +51,10 @@ export function Home() {
             <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
-      </div>
+      </SectionCard>
 
       {/* Data Sources */}
-      <div className="rounded-3xl bg-white p-10 shadow-lg ring-1 ring-slate-200">
+      <SectionCard className="p-10">
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold text-slate-900">Trusted Data Sources</h2>
           <p className="mt-2 text-slate-600">
@@ -88,7 +84,7 @@ export function Home() {
             <p className="text-sm text-slate-600">Victorian Health Information</p>
           </div>
         </div>
-      </div>
-    </div>
+      </SectionCard>
+    </PageContainer>
   );
 }

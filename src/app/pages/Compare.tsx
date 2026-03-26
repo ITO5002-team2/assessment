@@ -1,21 +1,22 @@
 import { GitCompare, TrendingUp, TrendingDown, AlertCircle, CheckCircle } from "lucide-react";
+import { FilterPanel } from "../components/FilterPanel";
+import { InsightCallout } from "../components/InsightCallout";
+import { PageContainer } from "../components/PageContainer";
+import { PageHero } from "../components/PageHero";
+import { SectionCard } from "../components/SectionCard";
 
 export function Compare() {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-      {/* Title */}
-      <div className="mb-8 rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 p-10 text-white shadow-xl">
-        <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-            <GitCompare className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="mb-2 text-3xl font-bold">Compare Areas</h1>
-          <p className="text-blue-50">Select 2-3 areas to compare vaccination coverage rates</p>
-        </div>
-      </div>
+    <PageContainer>
+      <PageHero
+        title="Compare Areas"
+        description="Select 2-3 areas to compare vaccination coverage rates"
+        icon={GitCompare}
+        className="bg-gradient-to-r from-blue-600 to-purple-600"
+      />
 
       {/* Area Selectors */}
-      <div className="mb-8 rounded-3xl bg-white p-8 shadow-lg ring-1 ring-slate-200">
+      <FilterPanel>
         <h2 className="mb-6 text-2xl font-bold text-slate-900">Select Areas</h2>
         <div className="grid gap-6 md:grid-cols-3">
           <div>
@@ -43,10 +44,10 @@ export function Compare() {
             </select>
           </div>
         </div>
-      </div>
+      </FilterPanel>
 
       {/* Comparison Chart */}
-      <div className="mb-8 rounded-3xl bg-white p-8 shadow-lg ring-1 ring-slate-200">
+      <SectionCard className="mb-8 p-8">
         <h2 className="mb-4 text-2xl font-bold text-slate-900">Coverage Comparison</h2>
         <div className="flex aspect-[2/1] items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-br from-slate-50 to-slate-100">
           <div className="text-center">
@@ -57,10 +58,10 @@ export function Compare() {
             <p className="mt-2 text-xs text-slate-500">Prepared for live area-to-area coverage comparisons</p>
           </div>
         </div>
-      </div>
+      </SectionCard>
 
       {/* Comparison Table */}
-      <div className="mb-8 rounded-3xl bg-white p-8 shadow-lg ring-1 ring-slate-200">
+      <SectionCard className="mb-8 p-8">
         <h2 className="mb-6 text-2xl font-bold text-slate-900">Summary Table</h2>
         <div className="overflow-hidden rounded-2xl border border-slate-200">
           <table className="w-full">
@@ -124,11 +125,15 @@ export function Compare() {
             </tbody>
           </table>
         </div>
-      </div>
+      </SectionCard>
 
       {/* Interpretation Box */}
-      <div className="rounded-3xl border-l-4 border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 p-8 shadow-md">
-        <h3 className="mb-4 text-xl font-bold text-slate-900">What This Means</h3>
+      <InsightCallout
+        title="What This Means"
+        icon={AlertCircle}
+        className="rounded-3xl border-l-4 border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50"
+        iconClassName="hidden"
+      >
         <div className="space-y-3">
           <div className="flex items-start gap-3">
             <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-green-600" />
@@ -152,7 +157,7 @@ export function Compare() {
             All three areas are approaching the 95% herd immunity threshold recommended for childhood vaccines.
           </p>
         </div>
-      </div>
-    </div>
+      </InsightCallout>
+    </PageContainer>
   );
 }

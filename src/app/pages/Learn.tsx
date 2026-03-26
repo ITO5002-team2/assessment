@@ -1,39 +1,34 @@
 import { Link } from "react-router";
 import { BookOpen, Shield, Users, Microscope, ExternalLink, HelpCircle, AlertTriangle, BarChart3 } from "lucide-react";
+import { InsightCallout } from "../components/InsightCallout";
+import { PageContainer } from "../components/PageContainer";
+import { PageHero } from "../components/PageHero";
+import { SectionCard } from "../components/SectionCard";
 
 export function Learn() {
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
-      {/* Title */}
-      <div className="mb-8 rounded-3xl bg-gradient-to-r from-green-600 to-emerald-600 p-10 text-white shadow-xl">
-        <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-            <BookOpen className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="mb-2 text-3xl font-bold">
-            Trusted Information
-          </h1>
-          <p className="text-green-50">
-            Learn about childhood vaccination and view trusted resources
-          </p>
-        </div>
-      </div>
+    <PageContainer>
+      <PageHero
+        title="Trusted Information"
+        description="Learn about childhood vaccination and view trusted resources"
+        icon={BookOpen}
+        className="bg-gradient-to-r from-green-600 to-emerald-600"
+      />
 
       {/* Notice Box */}
-      <div className="mb-8 rounded-2xl border-l-4 border-amber-500 bg-amber-50 p-6 shadow-md">
-        <div className="flex items-start gap-3">
-          <AlertTriangle className="mt-1 h-6 w-6 flex-shrink-0 text-amber-600" />
-          <div>
-            <h2 className="mb-2 font-bold text-slate-900">Important Notice</h2>
-            <p className="text-slate-700">
-              This dashboard provides information only and is not medical advice. Please consult with your healthcare provider for personalized guidance.
-            </p>
-          </div>
-        </div>
-      </div>
+      <InsightCallout
+        title="Important Notice"
+        icon={AlertTriangle}
+        className="mb-8 rounded-2xl border-l-4 border-amber-500 bg-amber-50 p-6"
+        iconClassName="mt-1 text-amber-600"
+      >
+        <p>
+          This dashboard provides information only and is not medical advice. Please consult with your healthcare provider for personalized guidance.
+        </p>
+      </InsightCallout>
 
       {/* Why Vaccination Matters */}
-      <div className="mb-8 rounded-3xl bg-white p-8 shadow-lg ring-1 ring-slate-200">
+      <SectionCard className="mb-8 p-8">
         <h2 className="mb-6 flex items-center gap-3 text-2xl font-bold text-slate-900">
           <Shield className="h-7 w-7 text-blue-600" />
           Why Childhood Vaccination Matters
@@ -76,10 +71,10 @@ export function Learn() {
             </div>
           </div>
         </div>
-      </div>
+      </SectionCard>
 
       {/* Resources */}
-      <div className="mb-8 rounded-3xl bg-white p-8 shadow-lg ring-1 ring-slate-200">
+      <SectionCard className="mb-8 p-8">
         <h2 className="mb-6 flex items-center gap-3 text-2xl font-bold text-slate-900">
           <ExternalLink className="h-7 w-7 text-green-600" />
           Official Resources
@@ -116,10 +111,10 @@ export function Learn() {
             </div>
           </a>
         </div>
-      </div>
+      </SectionCard>
 
       {/* FAQ */}
-      <div className="mb-8 rounded-3xl bg-white p-8 shadow-lg ring-1 ring-slate-200">
+      <SectionCard className="mb-8 p-8">
         <h2 className="mb-6 flex items-center gap-3 text-2xl font-bold text-slate-900">
           <HelpCircle className="h-7 w-7 text-blue-600" />
           Frequently Asked Questions
@@ -150,7 +145,7 @@ export function Learn() {
             <p className="pl-8 text-slate-700">You can usually confirm immunisation history through Medicare-linked services, the Australian Immunisation Register, or your healthcare provider.</p>
           </div>
         </div>
-      </div>
+      </SectionCard>
 
       {/* CTA */}
       <div className="text-center">
@@ -162,6 +157,6 @@ export function Learn() {
           View Coverage Dashboard
         </Link>
       </div>
-    </div>
+    </PageContainer>
   );
 }

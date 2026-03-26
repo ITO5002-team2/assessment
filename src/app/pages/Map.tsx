@@ -1,21 +1,22 @@
 import { Map as MapIcon, MapPin, TrendingUp, Target, AlertCircle, CheckCircle, TrendingDown } from "lucide-react";
+import { FilterPanel } from "../components/FilterPanel";
+import { InsightCallout } from "../components/InsightCallout";
+import { PageContainer } from "../components/PageContainer";
+import { PageHero } from "../components/PageHero";
+import { SectionCard } from "../components/SectionCard";
 
 export function Map() {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-      {/* Title */}
-      <div className="mb-8 rounded-3xl bg-gradient-to-r from-purple-600 to-pink-600 p-10 text-white shadow-xl">
-        <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-            <MapIcon className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="mb-2 text-3xl font-bold">Coverage Map</h1>
-          <p className="text-purple-50">View childhood vaccination coverage by region</p>
-        </div>
-      </div>
+    <PageContainer>
+      <PageHero
+        title="Coverage Map"
+        description="View childhood vaccination coverage by region"
+        icon={MapIcon}
+        className="bg-gradient-to-r from-purple-600 to-pink-600"
+      />
 
       {/* Filter Bar */}
-      <div className="mb-8 rounded-3xl bg-white p-8 shadow-lg ring-1 ring-slate-200">
+      <FilterPanel>
         <div className="mb-6 grid gap-6 md:grid-cols-3">
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
@@ -47,7 +48,7 @@ export function Map() {
             Update Map
           </button>
         </div>
-      </div>
+      </FilterPanel>
 
       {/* Summary Cards */}
       <div className="mb-8 grid gap-6 md:grid-cols-3">
@@ -84,7 +85,7 @@ export function Map() {
       </div>
 
       {/* Map Section */}
-      <div className="mb-8 rounded-3xl bg-white p-8 shadow-lg ring-1 ring-slate-200">
+      <SectionCard className="mb-8 p-8">
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <h2 className="flex items-center gap-3 text-2xl font-bold text-slate-900">
             <MapIcon className="h-7 w-7 text-purple-600" />
@@ -118,10 +119,10 @@ export function Map() {
             <p className="text-xs text-slate-500">Click a region to reveal details and comparisons</p>
           </div>
         </div>
-      </div>
+      </SectionCard>
 
       {/* Area Details Panel */}
-      <div className="mb-8 rounded-3xl bg-white p-8 shadow-lg ring-1 ring-slate-200">
+      <SectionCard className="mb-8 p-8">
         <h2 className="mb-6 text-2xl font-bold text-slate-900">Area Details</h2>
         <div className="overflow-hidden rounded-2xl border border-slate-200">
           <table className="w-full">
@@ -207,23 +208,22 @@ export function Map() {
             </tbody>
           </table>
         </div>
-      </div>
+      </SectionCard>
 
       {/* Insight Box */}
-      <div className="rounded-3xl border-l-4 border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 p-8 shadow-md">
-        <div className="flex gap-3">
-          <AlertCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-purple-600" />
-          <div>
-            <h3 className="mb-2 text-xl font-bold text-slate-900">Plain-Language Summary</h3>
-            <p className="leading-relaxed text-slate-700">
-          The map shows vaccination coverage across <strong>5 regions in Melbourne</strong>. Coverage rates range from 
-          <strong> 90.7% to 95.2%</strong>. Melbourne CBD has the highest coverage at 95.2%, exceeding the state 
-          average. Carlton has the lowest coverage at 90.7%, which is 3.8% below the state average. Most areas are 
+      <InsightCallout
+        title="Plain-Language Summary"
+        icon={AlertCircle}
+        className="rounded-3xl border-l-4 border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50"
+        iconClassName="text-purple-600"
+      >
+        <p>
+          The map shows vaccination coverage across <strong>5 regions in Melbourne</strong>. Coverage rates range from
+          <strong> 90.7% to 95.2%</strong>. Melbourne CBD has the highest coverage at 95.2%, exceeding the state
+          average. Carlton has the lowest coverage at 90.7%, which is 3.8% below the state average. Most areas are
           approaching the recommended 95% herd immunity threshold.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+        </p>
+      </InsightCallout>
+    </PageContainer>
   );
 }

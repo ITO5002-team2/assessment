@@ -1,11 +1,15 @@
 import { Link } from "react-router";
 import { Target, Users, TrendingUp, BarChart3, TableProperties, AlertCircle, GitCompare, BookOpen } from "lucide-react";
+import { FilterPanel } from "../components/FilterPanel";
+import { InsightCallout } from "../components/InsightCallout";
+import { PageContainer } from "../components/PageContainer";
+import { SectionCard } from "../components/SectionCard";
 
 export function Dashboard() {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
+    <PageContainer>
       {/* Filter Bar */}
-      <div className="mb-6 rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+      <FilterPanel className="mb-6 p-6">
         <div className="grid gap-6 md:grid-cols-3">
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
@@ -30,7 +34,7 @@ export function Dashboard() {
             </select>
           </div>
         </div>
-      </div>
+      </FilterPanel>
 
       {/* Summary Cards */}
       <div className="mb-6 grid gap-6 md:grid-cols-3">
@@ -69,7 +73,7 @@ export function Dashboard() {
       {/* Main Content Grid */}
       <div className="mb-6 grid gap-6 lg:grid-cols-2">
         {/* Chart Area */}
-        <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+        <SectionCard className="rounded-2xl p-6">
           <h2 className="mb-4 flex items-center gap-3 text-xl font-bold text-slate-900">
             <BarChart3 className="h-6 w-6 text-blue-600" />
             Coverage by Area
@@ -83,10 +87,10 @@ export function Dashboard() {
               <p className="mt-1 text-xs text-slate-500">Designed for a live regional coverage chart</p>
             </div>
           </div>
-        </div>
+        </SectionCard>
 
         {/* Map/List Area */}
-        <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-slate-200">
+        <SectionCard className="rounded-2xl p-6">
           <h2 className="mb-4 flex items-center gap-3 text-xl font-bold text-slate-900">
             <TableProperties className="h-6 w-6 text-emerald-600" />
             Regional Breakdown
@@ -119,22 +123,21 @@ export function Dashboard() {
               </div>
             </div>
           </div>
-        </div>
+        </SectionCard>
       </div>
 
       {/* Insight Box */}
-      <div className="mb-6 rounded-2xl border-l-4 border-blue-500 bg-blue-50 p-6 shadow-md">
-        <div className="flex gap-3">
-          <AlertCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-blue-600" />
-          <div>
-            <h3 className="mb-2 font-bold text-slate-900">Plain-Language Summary</h3>
-            <p className="leading-relaxed text-slate-700">
-          This area has a vaccination coverage rate of 93.2%, which is <strong>below the state average</strong> of 94.5%. 
+      <InsightCallout
+        title="Plain-Language Summary"
+        icon={AlertCircle}
+        className="mb-6 rounded-2xl border-l-4 border-blue-500 bg-blue-50 p-6"
+        iconClassName="text-blue-600"
+      >
+        <p>
+          This area has a vaccination coverage rate of 93.2%, which is <strong>below the state average</strong> of 94.5%.
           To reach herd immunity thresholds, coverage rates of 95% or higher are recommended for most childhood vaccines.
-            </p>
-          </div>
-        </div>
-      </div>
+        </p>
+      </InsightCallout>
 
       {/* Action Buttons */}
       <div className="flex flex-wrap justify-center gap-4">
@@ -153,6 +156,6 @@ export function Dashboard() {
           Learn More
         </Link>
       </div>
-    </div>
+    </PageContainer>
   );
 }
