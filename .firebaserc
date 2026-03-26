@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "vacc-coverage-dash-2026"
+  },
+  "targets": {
+    "vacc-coverage-dash-2026": {
+      "hosting": {
+        "iter1": [
+          "vacc-coverage-dash-iter1-2026"
+        ]
+      }
+    }
+  }
+}

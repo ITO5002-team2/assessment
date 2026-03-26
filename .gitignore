@@ -26,6 +26,7 @@ pnpm-debug.log*
 .vite-temp/
 .cache/
 coverage/
+.firebase/
 
 # Editor and OS files
 .DS_Store
