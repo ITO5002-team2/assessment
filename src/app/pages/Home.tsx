@@ -8,8 +8,8 @@ export function Home() {
   return (
     <PageContainer className="py-10">
       <PageHero
-        title="Understand childhood vaccination coverage in your area"
-        description="This dashboard uses official public data to help parents, carers, and community health stakeholders understand vaccination coverage rates for young children across Victoria and Australia."
+        title="Assess childhood vaccination coverage and risk patterns with confidence"
+        description="This dashboard is designed first for clinicians, GPs, nurses, and community health workers who need a fast, trustworthy view of childhood vaccination coverage by area. It also supports conversations with parents and guardians through clear, plain-language framing."
         icon={Shield}
         className="bg-gradient-to-br from-blue-600 via-blue-700 to-slate-900 p-12 shadow-2xl"
         contentClassName="mx-auto max-w-3xl"
@@ -21,7 +21,7 @@ export function Home() {
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold text-slate-900">Select Your Area</h2>
           <p className="mt-2 text-slate-600">
-            Choose a location to explore coverage patterns, comparisons, and supporting context.
+            Choose a location to review local coverage patterns, compare regions, and prepare for clinician-patient conversations with clearer context.
           </p>
         </div>
         <div className="mx-auto mb-8 grid max-w-2xl gap-6 md:grid-cols-2">
@@ -58,7 +58,7 @@ export function Home() {
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold text-slate-900">Trusted Data Sources</h2>
           <p className="mt-2 text-slate-600">
-            The dashboard is designed around official public health and population datasets.
+            The dashboard is grounded in official vaccination and population datasets to support credible, evidence-based interpretation.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
@@ -80,8 +80,8 @@ export function Home() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple-600">
               <Shield className="h-8 w-8 text-white" />
             </div>
-            <h3 className="mb-2 text-lg font-bold text-slate-900">Vic Health</h3>
-            <p className="text-sm text-slate-600">Victorian Health Information</p>
+            <h3 className="mb-2 text-lg font-bold text-slate-900">Public Health Guidance</h3>
+            <p className="text-sm text-slate-600">State and national health sources that support interpretation and follow-up learning.</p>
           </div>
         </div>
       </SectionCard>
