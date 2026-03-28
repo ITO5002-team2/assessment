@@ -27,11 +27,8 @@ The goal of this project is to build a clear, interactive dashboard that:
 
 ## Key Stakeholders
 
-- Parents and carers
-- Public health agencies
-- Community health organisations
-- Local councils
-- Immunisation providers
+- Primary Persona: Doctors and Comnunity Health Workders
+- Secondary Persona: Parents/Guardians
 
 ## Running the Code
 
