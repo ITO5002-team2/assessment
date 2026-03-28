@@ -2,7 +2,7 @@
 
 ## Idea
 
-Vaccination Coverage and Awareness Dashboard for parents, carers, and health stakeholders in Australia.
+Vaccination Coverage and Awareness Dashboard for clinicians, community health workers, and parents/guardians in Australia.
 
 The project supports **UN Sustainable Development Goal 3: Good Health and Well-Being** by making childhood immunisation data easier to understand and use.
 
@@ -16,6 +16,7 @@ The goal of this project is to build a clear, interactive dashboard that:
 - compares coverage levels across regions
 - highlights areas with lower immunisation coverage
 - provides contextual information to help users interpret regional variation
+- helps clinicians quickly assess local vaccination coverage and risk patterns
 
 ## Data Sources
 
@@ -27,7 +28,7 @@ The goal of this project is to build a clear, interactive dashboard that:
 
 ## Key Stakeholders
 
-- Primary Persona: Doctors and Comnunity Health Workders
+- Primary Persona: Clinicians, doctors, and community health workers
 - Secondary Persona: Parents/Guardians
 
 ## Running the Code
