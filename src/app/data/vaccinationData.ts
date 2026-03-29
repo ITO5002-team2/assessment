@@ -361,6 +361,15 @@ export function getAreaInsightByCode(params: {
   );
 }
 
+export function getCoverageRecordByCode(params: {
+  sa3Code: string;
+  ageGroup: AgeGroup;
+}): CoverageRecord | undefined {
+  return coverageRecords.find(
+    (record) => record.sa3Code === params.sa3Code && record.ageGroup === params.ageGroup,
+  );
+}
+
 export function getCoverageSummaryForState(params: {
   stateCode: StateCode;
   ageGroup: AgeGroup;

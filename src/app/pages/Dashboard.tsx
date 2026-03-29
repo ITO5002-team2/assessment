@@ -10,6 +10,7 @@ import {
   AGE_GROUPS,
   getAreaInsightByCode,
   getAreaInsights,
+  getCoverageRecordByCode,
   getCoverageSummaryForState,
   getRegionsForState,
   stateOptions,
@@ -31,6 +32,30 @@ function isStateCode(value: string | null): value is StateCode {
   return stateOptions.some((state) => state.code === value);
 }
 
+const ANTIGEN_CONFIG: Record<
+  AgeGroup,
+  Array<{ key: keyof ReturnType<typeof getCoverageRecordByCode>["antigens"]; label: string }>
+> = {
+  "1 Year olds": [
+    { key: "dtp", label: "DTP" },
+    { key: "polio", label: "Polio" },
+    { key: "hib", label: "HIB" },
+    { key: "hep", label: "Hep B" },
+    { key: "pneumo", label: "Pneumo" },
+  ],
+  "2 Year olds": [
+    { key: "dtp", label: "DTP" },
+    { key: "mmr", label: "MMR" },
+    { key: "pneumo", label: "Pneumo" },
+    { key: "menC", label: "MenC" },
+    { key: "varicella", label: "Varicella" },
+  ],
+  "5 Year olds": [
+    { key: "dtp", label: "DTP" },
+    { key: "polio", label: "Polio" },
+  ],
+};
+
 export function Dashboard() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialState = isStateCode(searchParams.get("state")) ? searchParams.get("state") : "VIC";
@@ -44,6 +69,11 @@ export function Dashboard() {
   const [selectedRegion, setSelectedRegion] = useState(initialRegion);
 
   const selectedArea = getAreaInsightByCode({
+    sa3Code: selectedRegion,
+    ageGroup: selectedAgeGroup,
+  });
+
+  const selectedCoverageRecord = getCoverageRecordByCode({
     sa3Code: selectedRegion,
     ageGroup: selectedAgeGroup,
   });
@@ -95,6 +125,24 @@ export function Dashboard() {
       },
     ];
   }, [regionalBreakdown, selectedRegion]);
+
+  const antigenRows = useMemo(() => {
+    if (!selectedCoverageRecord) {
+      return [];
+    }
+
+    return ANTIGEN_CONFIG[selectedAgeGroup]
+      .map(({ key, label }) => {
+        const value = selectedCoverageRecord.antigens[key];
+        return {
+          key,
+          label,
+          value,
+          gapToTarget: value !== null ? value - 95 : null,
+        };
+      })
+      .filter((row) => row.value !== null);
+  }, [selectedAgeGroup, selectedCoverageRecord]);
 
   function updateSearch(nextState: StateCode, nextRegion: string) {
     setSearchParams({
@@ -214,111 +262,53 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="mb-6 grid gap-6 lg:grid-cols-[0.9fr_1.5fr]">
-        {/* Attention Panel */}
+      {/* Detail Row */}
+      <div className="mb-6 grid gap-6 lg:grid-cols-[0.95fr_1.55fr]">
         <SectionCard className="min-w-0 rounded-2xl p-6">
           <h2 className="mb-4 flex items-center gap-3 text-xl font-bold text-slate-900">
             <BarChart3 className="h-6 w-6 text-blue-600" />
-            What Needs Attention
+            Coverage by Vaccine
           </h2>
           <p className="mb-4 text-sm text-slate-600">
-            A quick interpretation of the selected region against the state benchmark and the 95% target for{" "}
-            {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} children.
+            Relevant schedule components for the selected region and {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} children.
           </p>
           {selectedArea ? (
-            <div className="space-y-4">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                <div className="mb-2 flex items-center justify-between gap-4">
+            <div className="space-y-3">
+              {antigenRows.map((row) => (
+                <div
+                  key={row.key}
+                  className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
+                >
                   <div>
-                    <p className="text-sm font-semibold text-slate-500">Selected Region</p>
-                    <h3 className="text-2xl font-bold text-slate-900">{selectedArea.sa3Name}</h3>
+                    <p className="font-semibold text-slate-900">{row.label}</p>
+                    <p className="text-sm text-slate-500">
+                      {row.gapToTarget !== null && row.gapToTarget >= 0 ? "At or above 95% target" : "Below 95% target"}
+                    </p>
                   </div>
-                  <span
-                    className={
-                      selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
-                        ? "inline-flex rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
-                        : "inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-700"
-                    }
-                  >
-                    {selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
-                      ? "At or above target"
-                      : "Below target"}
-                  </span>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-slate-900">{row.value?.toFixed(1)}%</p>
+                    <span
+                      className={
+                        row.gapToTarget !== null && row.gapToTarget >= 0
+                          ? "inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700"
+                          : "inline-flex rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700"
+                      }
+                    >
+                      {row.gapToTarget !== null ? `${row.gapToTarget >= 0 ? "+" : ""}${row.gapToTarget.toFixed(1)}%` : "No data"}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-sm text-slate-600">
-                  {selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
-                    ? "Coverage is meeting the 95% benchmark. Focus can shift to maintaining uptake and monitoring change."
-                    : "Coverage is below the 95% benchmark, so this area may warrant closer review and follow-up."}
-                </p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-sm font-semibold text-slate-500">State Rank</p>
-                  <p className="mt-2 text-3xl font-bold text-slate-900">
-                    {selectedRegionRank ? `#${selectedRegionRank}` : "No data"}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500">Out of {regionalBreakdown.length} regions with available data</p>
-                </div>
-
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-sm font-semibold text-slate-500">Child Cohort</p>
-                  <p className="mt-2 text-3xl font-bold text-slate-900">
-                    {selectedArea.childPopulation !== null ? selectedArea.childPopulation.toLocaleString() : "No data"}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Children in the selected {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} cohort
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-sm font-semibold text-slate-500">vs State Average</p>
-                  <p
-                    className={
-                      selectedArea.gapToStateAveragePct !== null && selectedArea.gapToStateAveragePct >= 0
-                        ? "mt-2 text-3xl font-bold text-green-700"
-                        : "mt-2 text-3xl font-bold text-amber-700"
-                    }
-                  >
-                    {selectedArea.gapToStateAveragePct !== null
-                      ? `${selectedArea.gapToStateAveragePct >= 0 ? "+" : ""}${selectedArea.gapToStateAveragePct.toFixed(1)}%`
-                      : "No data"}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Compared with the {selectedArea.stateName} average for this age group
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <p className="text-sm font-semibold text-slate-500">vs 95% Target</p>
-                  <p
-                    className={
-                      selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
-                        ? "mt-2 text-3xl font-bold text-green-700"
-                        : "mt-2 text-3xl font-bold text-red-700"
-                    }
-                  >
-                    {selectedArea.fullyVaccinatedPct !== null
-                      ? `${selectedArea.fullyVaccinatedPct - 95 >= 0 ? "+" : ""}${(selectedArea.fullyVaccinatedPct - 95).toFixed(1)}%`
-                      : "No data"}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Distance from the 95% benchmark used for childhood vaccine coverage
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           ) : (
             <div className="flex h-[320px] items-center justify-center rounded-2xl border border-slate-200 bg-slate-50">
               <p className="max-w-sm text-center text-sm text-slate-600">
-                Coverage data is not currently available for the selected region and age-group combination.
+                Vaccine-specific coverage data is not currently available for the selected region and age-group combination.
               </p>
             </div>
           )}
         </SectionCard>
 
-        {/* Map/List Area */}
         <SectionCard className="min-w-0 rounded-2xl p-6">
           <h2 className="mb-4 flex items-center gap-3 text-xl font-bold text-slate-900">
             <TableProperties className="h-6 w-6 text-emerald-600" />
@@ -396,6 +386,104 @@ export function Dashboard() {
           </div>
         </SectionCard>
       </div>
+
+      {/* Attention Row */}
+      <SectionCard className="mb-6 min-w-0 rounded-2xl p-6">
+        <h2 className="mb-4 flex items-center gap-3 text-xl font-bold text-slate-900">
+          <AlertCircle className="h-6 w-6 text-blue-600" />
+          What Needs Attention
+        </h2>
+        <p className="mb-4 text-sm text-slate-600">
+          A quick interpretation of the selected region against the state benchmark and the 95% target for{" "}
+          {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} children.
+        </p>
+        {selectedArea ? (
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <div className="mb-2 flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500">Selected Region</p>
+                  <h3 className="text-2xl font-bold text-slate-900">{selectedArea.sa3Name}</h3>
+                </div>
+                <span
+                  className={
+                    selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
+                      ? "inline-flex rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
+                      : "inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-700"
+                  }
+                >
+                  {selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
+                    ? "At or above target"
+                    : "Below target"}
+                </span>
+              </div>
+              <p className="text-sm text-slate-600">
+                {selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
+                  ? "Coverage is meeting the 95% benchmark. Focus can shift to maintaining uptake and monitoring change."
+                  : "Coverage is below the 95% benchmark, so this area may warrant closer review and follow-up."}
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-sm font-semibold text-slate-500">State Rank</p>
+                <p className="mt-2 text-3xl font-bold text-slate-900">{selectedRegionRank ? `#${selectedRegionRank}` : "No data"}</p>
+                <p className="mt-1 text-sm text-slate-500">Out of {regionalBreakdown.length} regions with available data</p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-sm font-semibold text-slate-500">Child Cohort</p>
+                <p className="mt-2 text-3xl font-bold text-slate-900">
+                  {selectedArea.childPopulation !== null ? selectedArea.childPopulation.toLocaleString() : "No data"}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">
+                  Children in the selected {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} cohort
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-sm font-semibold text-slate-500">vs State Average</p>
+                <p
+                  className={
+                    selectedArea.gapToStateAveragePct !== null && selectedArea.gapToStateAveragePct >= 0
+                      ? "mt-2 text-3xl font-bold text-green-700"
+                      : "mt-2 text-3xl font-bold text-amber-700"
+                  }
+                >
+                  {selectedArea.gapToStateAveragePct !== null
+                    ? `${selectedArea.gapToStateAveragePct >= 0 ? "+" : ""}${selectedArea.gapToStateAveragePct.toFixed(1)}%`
+                    : "No data"}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">Compared with the {selectedArea.stateName} average for this age group</p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-sm font-semibold text-slate-500">vs 95% Target</p>
+                <p
+                  className={
+                    selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
+                      ? "mt-2 text-3xl font-bold text-green-700"
+                      : "mt-2 text-3xl font-bold text-red-700"
+                  }
+                >
+                  {selectedArea.fullyVaccinatedPct !== null
+                    ? `${selectedArea.fullyVaccinatedPct - 95 >= 0 ? "+" : ""}${(selectedArea.fullyVaccinatedPct - 95).toFixed(1)}%`
+                    : "No data"}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">
+                  Distance from the 95% benchmark used for childhood vaccine coverage
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex h-[220px] items-center justify-center rounded-2xl border border-slate-200 bg-slate-50">
+            <p className="max-w-sm text-center text-sm text-slate-600">
+              Coverage data is not currently available for the selected region and age-group combination.
+            </p>
+          </div>
+        )}
+      </SectionCard>
 
       {/* Insight Box */}
       <InsightCallout
