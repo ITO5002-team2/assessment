@@ -72,6 +72,14 @@ function getTextClassName(tone: ReturnType<typeof getStatusTone>) {
   return "text-base font-semibold text-slate-600 md:text-lg";
 }
 
+function estimateChildrenNeeded(coveragePct: number | null, childPopulation: number | null) {
+  if (coveragePct === null || childPopulation === null || coveragePct >= 95) {
+    return 0;
+  }
+
+  return Math.ceil(((95 - coveragePct) / 100) * childPopulation);
+}
+
 const ANTIGEN_CONFIG: Record<
   AgeGroup,
   Array<{ key: keyof ReturnType<typeof getCoverageRecordByCode>["antigens"]; label: string }>
@@ -183,6 +191,10 @@ export function Dashboard() {
       })
       .filter((row) => row.value !== null);
   }, [selectedAgeGroup, selectedCoverageRecord]);
+
+  const childrenNeededToTarget = selectedArea
+    ? estimateChildrenNeeded(selectedArea.fullyVaccinatedPct, selectedArea.childPopulation)
+    : 0;
 
   function updateSearch(nextState: StateCode, nextRegion: string) {
     setSearchParams({
@@ -502,7 +514,7 @@ export function Dashboard() {
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
                 <p className="text-sm font-semibold text-slate-500">State Rank</p>
                 <p className="mt-2 text-3xl font-bold text-slate-900">{selectedRegionRank ? `#${selectedRegionRank}` : "No data"}</p>
@@ -510,12 +522,12 @@ export function Dashboard() {
               </div>
 
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <p className="text-sm font-semibold text-slate-500">Child Cohort</p>
+                <p className="text-sm font-semibold text-slate-500">Child Population</p>
                 <p className="mt-2 text-3xl font-bold text-slate-900">
                   {selectedArea.childPopulation !== null ? selectedArea.childPopulation.toLocaleString() : "No data"}
                 </p>
                 <p className="mt-1 text-sm text-slate-500">
-                  Children in the selected {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} cohort
+                  Children in the selected {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} age group
                 </p>
               </div>
 
@@ -551,6 +563,14 @@ export function Dashboard() {
                 </p>
                 <p className="mt-1 text-sm text-slate-500">
                   Distance from the 95% benchmark used for childhood vaccine coverage
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <p className="text-sm font-semibold text-slate-500">Children Needed</p>
+                <p className="mt-2 text-3xl font-bold text-slate-900">{childrenNeededToTarget.toLocaleString()}</p>
+                <p className="mt-1 text-sm text-slate-500">
+                  Estimated additional children needed in {selectedArea.sa3Name} to reach 95%
                 </p>
               </div>
             </div>

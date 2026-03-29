@@ -29,6 +29,18 @@ export function Home() {
     setCompareAreaTwo(nextRegions[1]?.sa3Code ?? nextRegions[0]?.sa3Code ?? "");
   }
 
+  function isCompareRegionDisabled(regionCode: string, currentField: "area1" | "area2") {
+    if (currentField !== "area1" && compareAreaOne === regionCode) {
+      return true;
+    }
+
+    if (currentField !== "area2" && compareAreaTwo === regionCode) {
+      return true;
+    }
+
+    return false;
+  }
+
   const dataSources = [
     {
       title: "Childhood Immunisation Coverage",
@@ -43,7 +55,7 @@ export function Home() {
       title: "Regional Population by Age and Sex",
       source: "Australian Bureau of Statistics",
       description:
-        "Official ABS population data used to give child cohort context for the selected age group and region.",
+        "Official ABS population data used to give child population context for the selected age group and region.",
       href: "https://www.abs.gov.au/statistics/people/population/regional-population-age-and-sex/latest-release",
       icon: BarChart2,
       iconClassName: "bg-green-600",
@@ -163,7 +175,11 @@ export function Home() {
                   className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                 >
                   {compareRegions.map((region) => (
-                    <option key={region.sa3Code} value={region.sa3Code}>
+                    <option
+                      key={region.sa3Code}
+                      value={region.sa3Code}
+                      disabled={isCompareRegionDisabled(region.sa3Code, "area1")}
+                    >
                       {region.sa3Name}
                     </option>
                   ))}
@@ -177,7 +193,11 @@ export function Home() {
                   className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
                 >
                   {compareRegions.map((region) => (
-                    <option key={region.sa3Code} value={region.sa3Code}>
+                    <option
+                      key={region.sa3Code}
+                      value={region.sa3Code}
+                      disabled={isCompareRegionDisabled(region.sa3Code, "area2")}
+                    >
                       {region.sa3Name}
                     </option>
                   ))}
