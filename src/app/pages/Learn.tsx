@@ -1,6 +1,4 @@
-import { Link } from "react-router";
-import { BookOpen, Shield, Users, Microscope, ExternalLink, HelpCircle, AlertTriangle, BarChart3 } from "lucide-react";
-import { InsightCallout } from "../components/InsightCallout";
+import { BookOpen, Shield, Users, Microscope, ExternalLink } from "lucide-react";
 import { PageContainer } from "../components/PageContainer";
 import { PageHero } from "../components/PageHero";
 import { SectionCard } from "../components/SectionCard";
@@ -10,28 +8,16 @@ export function Learn() {
     <PageContainer>
       <PageHero
         title="Trusted Information"
-        description="Learn about childhood vaccination and view trusted resources"
+        description="Learn about childhood vaccination, why coverage matters, and where to find trusted official guidance."
         icon={BookOpen}
         className="bg-gradient-to-r from-green-600 to-emerald-600"
       />
 
-      {/* Notice Box */}
-      <InsightCallout
-        title="Important Notice"
-        icon={AlertTriangle}
-        className="mb-8 rounded-2xl border-l-4 border-amber-500 bg-amber-50 p-6"
-        iconClassName="mt-1 text-amber-600"
-      >
-        <p>
-          This dashboard provides information only and is not medical advice. Please consult with your healthcare provider for personalized guidance.
-        </p>
-      </InsightCallout>
-
-      {/* Why Vaccination Matters */}
+      {/* How To Read Coverage Data */}
       <SectionCard className="mb-8 p-8">
         <h2 className="mb-6 flex items-center gap-3 text-2xl font-bold text-slate-900">
           <Shield className="h-7 w-7 text-blue-600" />
-          Why Childhood Vaccination Matters
+          How To Read Coverage Data
         </h2>
 
         <div className="space-y-4">
@@ -41,8 +27,8 @@ export function Learn() {
                 <Shield className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="mb-2 text-lg font-bold text-slate-900">Protects Individual Children</h3>
-                <p className="text-slate-700">Vaccines help protect children from serious diseases such as measles, whooping cough, and polio, reducing the risk of severe illness, complications, and hospitalization.</p>
+                <h3 className="mb-2 text-lg font-bold text-slate-900">Coverage Shows Recommended Uptake</h3>
+                <p className="text-slate-700">Vaccination coverage reflects the percentage of children in an area who are recorded as having received the recommended immunisations for their age.</p>
               </div>
             </div>
           </div>
@@ -53,8 +39,8 @@ export function Learn() {
                 <Users className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="mb-2 text-lg font-bold text-slate-900">Supports Community Health</h3>
-                <p className="text-slate-700">Strong coverage helps build herd immunity, which offers indirect protection to people who cannot be vaccinated or who are at greater clinical risk.</p>
+                <h3 className="mb-2 text-lg font-bold text-slate-900">Population Size Adds Important Context</h3>
+                <p className="text-slate-700">A percentage should be read together with the number of children it represents. A small difference in coverage can reflect very different numbers of children depending on the population size of the area.</p>
               </div>
             </div>
           </div>
@@ -65,8 +51,8 @@ export function Learn() {
                 <Microscope className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="mb-2 text-lg font-bold text-slate-900">Based on Scientific Evidence</h3>
-                <p className="text-slate-700">Vaccines are evaluated through rigorous research, regulatory review, and ongoing monitoring to support safety and effectiveness over time.</p>
+                <h3 className="mb-2 text-lg font-bold text-slate-900">Benchmarks Help Interpretation</h3>
+                <p className="text-slate-700">The 95% benchmark and the state average help place an area in context. Together they show whether coverage is meeting a commonly used target and how it compares with the wider state pattern.</p>
               </div>
             </div>
           </div>
@@ -81,7 +67,12 @@ export function Learn() {
         </h2>
 
         <div className="space-y-4">
-          <a href="#" className="group block rounded-2xl border-2 border-slate-200 bg-slate-50 p-6 transition-all hover:border-blue-400 hover:bg-slate-100">
+          <a
+            href="https://immunisationhandbook.health.gov.au/"
+            target="_blank"
+            rel="noreferrer"
+            className="group block rounded-2xl border-2 border-slate-200 bg-slate-50 p-6 transition-all hover:border-blue-400 hover:bg-slate-100"
+          >
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h3 className="mb-1 text-lg font-bold text-slate-900 transition-colors group-hover:text-blue-600">Australian Immunisation Handbook</h3>
@@ -91,21 +82,31 @@ export function Learn() {
             </div>
           </a>
 
-          <a href="#" className="group block rounded-2xl border-2 border-slate-200 bg-slate-50 p-6 transition-all hover:border-green-400 hover:bg-slate-100">
+          <a
+            href="https://www.betterhealth.vic.gov.au/health/HealthyLiving/immunisation-childhood"
+            target="_blank"
+            rel="noreferrer"
+            className="group block rounded-2xl border-2 border-slate-200 bg-slate-50 p-6 transition-all hover:border-green-400 hover:bg-slate-100"
+          >
             <div className="flex items-center justify-between gap-4">
               <div>
-                <h3 className="mb-1 text-lg font-bold text-slate-900 transition-colors group-hover:text-green-600">Victorian Department of Health</h3>
-                <p className="text-sm text-slate-600">Local vaccination guidance, community health information, and service directories.</p>
+                <h3 className="mb-1 text-lg font-bold text-slate-900 transition-colors group-hover:text-green-600">Better Health Channel Victoria</h3>
+                <p className="text-sm text-slate-600">Victorian childhood immunisation guidance written for the public, including schedule and side-effect information.</p>
               </div>
               <ExternalLink className="h-5 w-5 flex-shrink-0 text-slate-400 transition-colors group-hover:text-green-600" />
             </div>
           </a>
 
-          <a href="#" className="group block rounded-2xl border-2 border-slate-200 bg-slate-50 p-6 transition-all hover:border-purple-400 hover:bg-slate-100">
+          <a
+            href="https://www.who.int/news-room/questions-and-answers/item/vaccines-and-immunization-vaccine-safety"
+            target="_blank"
+            rel="noreferrer"
+            className="group block rounded-2xl border-2 border-slate-200 bg-slate-50 p-6 transition-all hover:border-purple-400 hover:bg-slate-100"
+          >
             <div className="flex items-center justify-between gap-4">
               <div>
-                <h3 className="mb-1 text-lg font-bold text-slate-900 transition-colors group-hover:text-purple-600">WHO Vaccination Information</h3>
-                <p className="text-sm text-slate-600">Global public health guidance and vaccine safety information from the World Health Organization.</p>
+                <h3 className="mb-1 text-lg font-bold text-slate-900 transition-colors group-hover:text-purple-600">WHO Vaccine Safety Q&amp;A</h3>
+                <p className="text-sm text-slate-600">Global public health information explaining how vaccine safety is tested, monitored, and reviewed over time.</p>
               </div>
               <ExternalLink className="h-5 w-5 flex-shrink-0 text-slate-400 transition-colors group-hover:text-purple-600" />
             </div>
@@ -113,50 +114,6 @@ export function Learn() {
         </div>
       </SectionCard>
 
-      {/* FAQ */}
-      <SectionCard className="mb-8 p-8">
-        <h2 className="mb-6 flex items-center gap-3 text-2xl font-bold text-slate-900">
-          <HelpCircle className="h-7 w-7 text-blue-600" />
-          Frequently Asked Questions
-        </h2>
-
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6">
-            <h3 className="mb-3 flex items-center gap-2 font-bold text-slate-900">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-sm text-white">Q</span>
-              What does vaccination coverage mean?
-            </h3>
-            <p className="pl-8 text-slate-700">Vaccination coverage refers to the percentage of children in a particular area who have received the recommended immunisations for their age.</p>
-          </div>
-
-          <div className="rounded-2xl border border-green-200 bg-green-50 p-6">
-            <h3 className="mb-3 flex items-center gap-2 font-bold text-slate-900">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-green-600 text-sm text-white">Q</span>
-              Where does the data come from?
-            </h3>
-            <p className="pl-8 text-slate-700">The dashboard is intended to draw from official public datasets such as the Australian Immunisation Register and relevant health and population sources.</p>
-          </div>
-
-          <div className="rounded-2xl border border-purple-200 bg-purple-50 p-6">
-            <h3 className="mb-3 flex items-center gap-2 font-bold text-slate-900">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-600 text-sm text-white">Q</span>
-              How can I check my child's vaccination status?
-            </h3>
-            <p className="pl-8 text-slate-700">You can usually confirm immunisation history through Medicare-linked services, the Australian Immunisation Register, or your healthcare provider.</p>
-          </div>
-        </div>
-      </SectionCard>
-
-      {/* CTA */}
-      <div className="text-center">
-        <Link
-          to="/dashboard"
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-4 font-semibold text-white shadow-lg transition-all hover:bg-blue-700 hover:shadow-xl"
-        >
-          <BarChart3 className="h-5 w-5" />
-          View Coverage Dashboard
-        </Link>
-      </div>
     </PageContainer>
   );
 }
