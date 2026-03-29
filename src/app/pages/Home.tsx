@@ -1,21 +1,32 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import { Shield, Database, BarChart2, ArrowRight, ExternalLink, MapPinned } from "lucide-react";
+import { Shield, Database, BarChart2, ArrowRight, ExternalLink, MapPinned, GitCompare, BookOpen, LayoutDashboard } from "lucide-react";
 import { PageContainer } from "../components/PageContainer";
 import { PageHero } from "../components/PageHero";
 import { SectionCard } from "../components/SectionCard";
 import { getRegionsForState, stateOptions, type StateCode } from "../data/vaccinationData";
 
 export function Home() {
-  const [selectedState, setSelectedState] = useState<StateCode>("VIC");
+  const [dashboardState, setDashboardState] = useState<StateCode>("VIC");
+  const dashboardRegions = useMemo(() => getRegionsForState(dashboardState), [dashboardState]);
+  const [dashboardRegion, setDashboardRegion] = useState(() => dashboardRegions[0]?.sa3Code ?? "");
 
-  const regions = useMemo(() => getRegionsForState(selectedState), [selectedState]);
-  const [selectedRegion, setSelectedRegion] = useState(() => regions[0]?.sa3Code ?? "");
+  const [compareState, setCompareState] = useState<StateCode>("VIC");
+  const compareRegions = useMemo(() => getRegionsForState(compareState), [compareState]);
+  const [compareAreaOne, setCompareAreaOne] = useState(() => compareRegions[0]?.sa3Code ?? "");
+  const [compareAreaTwo, setCompareAreaTwo] = useState(() => compareRegions[1]?.sa3Code ?? compareRegions[0]?.sa3Code ?? "");
 
-  function handleStateChange(nextState: StateCode) {
-    setSelectedState(nextState);
+  function handleDashboardStateChange(nextState: StateCode) {
+    setDashboardState(nextState);
     const nextRegions = getRegionsForState(nextState);
-    setSelectedRegion(nextRegions[0]?.sa3Code ?? "");
+    setDashboardRegion(nextRegions[0]?.sa3Code ?? "");
+  }
+
+  function handleCompareStateChange(nextState: StateCode) {
+    setCompareState(nextState);
+    const nextRegions = getRegionsForState(nextState);
+    setCompareAreaOne(nextRegions[0]?.sa3Code ?? "");
+    setCompareAreaTwo(nextRegions[1]?.sa3Code ?? nextRegions[0]?.sa3Code ?? "");
   }
 
   const dataSources = [
@@ -59,51 +70,167 @@ export function Home() {
         iconBadgeClassName="mb-6 h-20 w-20 bg-white/15"
       />
 
-      {/* Area Selection */}
+      {/* Workflow Selection */}
       <SectionCard className="mb-8 p-10">
         <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold text-slate-900">Select Your Area</h2>
+          <h2 className="text-3xl font-bold text-slate-900">Choose Your View</h2>
           <p className="mt-2 text-slate-600">
-            Choose a location to review local coverage patterns, compare regions, and prepare for clinician-patient conversations with clearer context.
+            Start with the workflow that best matches what you need to do next, from detailed review to area comparison or learning support.
           </p>
         </div>
-        <div className="mx-auto mb-8 grid max-w-2xl gap-6 md:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
-            <select
-              value={selectedState}
-              onChange={(event) => handleStateChange(event.target.value as StateCode)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              {stateOptions.map((state) => (
-                <option key={state.code} value={state.code}>
-                  {state.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-700">Region</label>
-            <select
-              value={selectedRegion}
-              onChange={(event) => setSelectedRegion(event.target.value)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              {regions.map((region) => (
-                <option key={region.sa3Code} value={region.sa3Code}>
-                  {region.sa3Name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="text-center">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <SectionCard className="border-blue-200 bg-gradient-to-br from-blue-50 via-white to-white p-8 shadow-md">
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600">
+              <LayoutDashboard className="h-7 w-7 text-white" />
+            </div>
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-slate-900">Open Dashboard</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                Review one selected region in detail with coverage, vaccine-level context, and a plain-language summary.
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
+                <select
+                  value={dashboardState}
+                  onChange={(event) => handleDashboardStateChange(event.target.value as StateCode)}
+                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
+                >
+                  {stateOptions.map((state) => (
+                    <option key={state.code} value={state.code}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700">Region</label>
+                <select
+                  value={dashboardRegion}
+                  onChange={(event) => setDashboardRegion(event.target.value)}
+                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
+                >
+                  {dashboardRegions.map((region) => (
+                    <option key={region.sa3Code} value={region.sa3Code}>
+                      {region.sa3Name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="mt-6">
+              <Link
+                to={`/dashboard?state=${dashboardState}&region=${dashboardRegion}`}
+                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg transition-all hover:bg-blue-700 hover:shadow-xl"
+              >
+                Go to Dashboard
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </SectionCard>
+
+          <SectionCard className="border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-white p-8 shadow-md">
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-600">
+              <GitCompare className="h-7 w-7 text-white" />
+            </div>
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-slate-900">Compare Areas</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                Start a side-by-side comparison using the current state and two regions you want to review together.
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
+                <select
+                  value={compareState}
+                  onChange={(event) => handleCompareStateChange(event.target.value as StateCode)}
+                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
+                >
+                  {stateOptions.map((state) => (
+                    <option key={state.code} value={state.code}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700">Area 1</label>
+                <select
+                  value={compareAreaOne}
+                  onChange={(event) => setCompareAreaOne(event.target.value)}
+                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
+                >
+                  {compareRegions.map((region) => (
+                    <option key={region.sa3Code} value={region.sa3Code}>
+                      {region.sa3Name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700">Area 2</label>
+                <select
+                  value={compareAreaTwo}
+                  onChange={(event) => setCompareAreaTwo(event.target.value)}
+                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
+                >
+                  {compareRegions.map((region) => (
+                    <option key={region.sa3Code} value={region.sa3Code}>
+                      {region.sa3Name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="mt-6">
+              <Link
+                to={`/compare?state=${compareState}&area1=${compareAreaOne}&area2=${compareAreaTwo}`}
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white shadow-lg transition-all hover:bg-emerald-700 hover:shadow-xl"
+              >
+                Compare Regions
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </SectionCard>
+
           <Link
-            to={`/dashboard?state=${selectedState}&region=${selectedRegion}`}
-            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-4 font-semibold text-white shadow-lg transition-all hover:bg-blue-700 hover:shadow-xl"
+            to="/map"
+            className="group rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg"
           >
-            View Dashboard
-            <ArrowRight className="h-5 w-5" />
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-700">
+              <MapPinned className="h-7 w-7 text-white" />
+            </div>
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-slate-900">Maps</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                Explore the map view to inspect spatial patterns and move between regions visually.
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700">
+              Open Maps
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
+
+          <Link
+            to="/learn"
+            className="group rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-8 shadow-sm transition-all hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg"
+          >
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500">
+              <BookOpen className="h-7 w-7 text-white" />
+            </div>
+            <div className="mb-6">
+              <h3 className="text-xl font-bold text-slate-900">Learn More</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                Use the learning section for trusted background information and support for interpreting vaccination coverage.
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700">
+              Open Learn
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </div>
           </Link>
         </div>
       </SectionCard>
