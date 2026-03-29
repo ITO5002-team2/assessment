@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Target, Users, TrendingUp, BarChart3, TableProperties, AlertCircle, GitCompare, BookOpen } from "lucide-react";
+import { Target, Users, TrendingUp, TrendingDown, BarChart3, TableProperties, AlertCircle, GitCompare, BookOpen, CheckCircle } from "lucide-react";
 import { FilterPanel } from "../components/FilterPanel";
 import { InsightCallout } from "../components/InsightCallout";
 import { PageContainer } from "../components/PageContainer";
@@ -30,6 +30,46 @@ const AGE_GROUP_VALUES_BY_LABEL = Object.fromEntries(
 
 function isStateCode(value: string | null): value is StateCode {
   return stateOptions.some((state) => state.code === value);
+}
+
+function roundToOneDecimal(value: number) {
+  return Math.round(value * 10) / 10;
+}
+
+function getStatusTone(delta: number | null) {
+  if (delta === null) {
+    return "neutral";
+  }
+
+  if (roundToOneDecimal(delta) >= 0) {
+    return "positive";
+  }
+
+  return "negative";
+}
+
+function getBadgeClassName(tone: ReturnType<typeof getStatusTone>) {
+  if (tone === "positive") {
+    return "inline-flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700";
+  }
+
+  if (tone === "negative") {
+    return "inline-flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-700";
+  }
+
+  return "inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700";
+}
+
+function getTextClassName(tone: ReturnType<typeof getStatusTone>) {
+  if (tone === "positive") {
+    return "text-base font-semibold text-green-600 md:text-lg";
+  }
+
+  if (tone === "negative") {
+    return "text-base font-semibold text-red-600 md:text-lg";
+  }
+
+  return "text-base font-semibold text-slate-600 md:text-lg";
 }
 
 const ANTIGEN_CONFIG: Record<
@@ -286,14 +326,20 @@ export function Dashboard() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-slate-900">{row.value?.toFixed(1)}%</p>
-                    <span
-                      className={
-                        row.gapToTarget !== null && row.gapToTarget >= 0
-                          ? "inline-flex rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700"
-                          : "inline-flex rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700"
-                      }
-                    >
+                    <div className="flex items-center justify-end gap-2">
+                      <p className={getTextClassName(getStatusTone(row.gapToTarget))}>{row.value?.toFixed(1)}%</p>
+                      {getStatusTone(row.gapToTarget) === "positive" ? (
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                      ) : (
+                        <AlertCircle className="h-5 w-5 text-red-600" />
+                      )}
+                    </div>
+                    <span className={getBadgeClassName(getStatusTone(row.gapToTarget))}>
+                      {row.gapToTarget !== null && row.gapToTarget >= 0 ? (
+                        <TrendingUp className="h-4 w-4" />
+                      ) : (
+                        <TrendingDown className="h-4 w-4" />
+                      )}
                       {row.gapToTarget !== null ? `${row.gapToTarget >= 0 ? "+" : ""}${row.gapToTarget.toFixed(1)}%` : "No data"}
                     </span>
                   </div>
@@ -323,10 +369,10 @@ export function Dashboard() {
                 <TableRow>
                   <TableHead className="w-16 px-3">Rank</TableHead>
                   <TableHead className="px-3">Region</TableHead>
-                  <TableHead className="px-3 text-right">Coverage</TableHead>
                   <TableHead className="px-3 text-right">Population</TableHead>
-                  <TableHead className="px-3 text-right">vs State Avg</TableHead>
+                  <TableHead className="px-3 text-right">Coverage</TableHead>
                   <TableHead className="px-3 text-right">vs 95% Target</TableHead>
+                  <TableHead className="px-3 text-right">vs State Avg</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -344,36 +390,52 @@ export function Dashboard() {
                         </span>
                       ) : null}
                     </TableCell>
-                    <TableCell className="px-3 text-right font-semibold text-slate-900">
-                      {region.fullyVaccinatedPct?.toFixed(1)}%
-                    </TableCell>
                     <TableCell className="px-3 text-right text-slate-700">
                       {region.childPopulation !== null ? region.childPopulation.toLocaleString() : "No data"}
                     </TableCell>
-                    <TableCell className="px-3 text-right">
-                      <span
-                        className={
-                          region.gapToStateAveragePct !== null && region.gapToStateAveragePct >= 0
-                            ? "font-semibold text-green-700"
-                            : "font-semibold text-amber-700"
-                        }
-                      >
-                        {region.gapToStateAveragePct !== null
-                          ? `${region.gapToStateAveragePct >= 0 ? "+" : ""}${region.gapToStateAveragePct.toFixed(1)}%`
-                          : "No data"}
-                      </span>
+                    <TableCell className="px-3 text-right font-semibold text-slate-900">
+                      {(() => {
+                        const targetGap =
+                          region.fullyVaccinatedPct !== null ? region.fullyVaccinatedPct - 95 : null;
+                        const coverageTone = getStatusTone(targetGap);
+
+                        return (
+                          <div className="flex items-center justify-end gap-2">
+                            <span className={getTextClassName(coverageTone)}>
+                              {region.fullyVaccinatedPct?.toFixed(1)}%
+                            </span>
+                            {coverageTone === "positive" ? (
+                              <CheckCircle className="h-5 w-5 text-green-600" />
+                            ) : (
+                              <AlertCircle className="h-5 w-5 text-red-600" />
+                            )}
+                          </div>
+                        );
+                      })()}
                     </TableCell>
                     <TableCell className="px-3 text-right">
                       {region.fullyVaccinatedPct !== null ? (
-                        <span
-                          className={
-                            region.fullyVaccinatedPct >= 95
-                              ? "inline-flex rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
-                              : "inline-flex rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-700"
-                          }
-                        >
-                          {region.fullyVaccinatedPct - 95 >= 0 ? "+" : ""}
-                          {(region.fullyVaccinatedPct - 95).toFixed(1)}%
+                        <span className={getBadgeClassName(getStatusTone(region.fullyVaccinatedPct - 95))}>
+                          {region.fullyVaccinatedPct - 95 >= 0 ? (
+                            <TrendingUp className="h-4 w-4" />
+                          ) : (
+                            <TrendingDown className="h-4 w-4" />
+                          )}
+                          {`${region.fullyVaccinatedPct - 95 >= 0 ? "+" : ""}${(region.fullyVaccinatedPct - 95).toFixed(1)}%`}
+                        </span>
+                      ) : (
+                        "No data"
+                      )}
+                    </TableCell>
+                    <TableCell className="px-3 text-right">
+                      {region.gapToStateAveragePct !== null ? (
+                        <span className={getBadgeClassName(getStatusTone(region.gapToStateAveragePct))}>
+                          {region.gapToStateAveragePct >= 0 ? (
+                            <TrendingUp className="h-4 w-4" />
+                          ) : (
+                            <TrendingDown className="h-4 w-4" />
+                          )}
+                          {`${region.gapToStateAveragePct >= 0 ? "+" : ""}${region.gapToStateAveragePct.toFixed(1)}%`}
                         </span>
                       ) : (
                         "No data"
@@ -406,21 +468,37 @@ export function Dashboard() {
                   <h3 className="text-2xl font-bold text-slate-900">{selectedArea.sa3Name}</h3>
                 </div>
                 <span
-                  className={
-                    selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
-                      ? "inline-flex rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
-                      : "inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-700"
-                  }
+                  className={getBadgeClassName(
+                    getStatusTone(
+                      selectedArea.fullyVaccinatedPct !== null ? selectedArea.fullyVaccinatedPct - 95 : null,
+                    ),
+                  )}
                 >
-                  {selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
-                    ? "At or above target"
-                    : "Below target"}
+                  {(() => {
+                    const tone = getStatusTone(
+                      selectedArea.fullyVaccinatedPct !== null ? selectedArea.fullyVaccinatedPct - 95 : null,
+                    );
+
+                    if (tone === "positive") {
+                      return "At or above target";
+                    }
+
+                    return "Below target";
+                  })()}
                 </span>
               </div>
               <p className="text-sm text-slate-600">
-                {selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
-                  ? "Coverage is meeting the 95% benchmark. Focus can shift to maintaining uptake and monitoring change."
-                  : "Coverage is below the 95% benchmark, so this area may warrant closer review and follow-up."}
+                {(() => {
+                  const tone = getStatusTone(
+                    selectedArea.fullyVaccinatedPct !== null ? selectedArea.fullyVaccinatedPct - 95 : null,
+                  );
+
+                  if (tone === "positive") {
+                    return "Coverage is meeting the 95% benchmark. Focus can shift to maintaining uptake and monitoring change.";
+                  }
+
+                  return "Coverage is below the 95% benchmark, so this area may warrant closer review and follow-up.";
+                })()}
               </p>
             </div>
 
@@ -444,11 +522,11 @@ export function Dashboard() {
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
                 <p className="text-sm font-semibold text-slate-500">vs State Average</p>
                 <p
-                  className={
-                    selectedArea.gapToStateAveragePct !== null && selectedArea.gapToStateAveragePct >= 0
-                      ? "mt-2 text-3xl font-bold text-green-700"
-                      : "mt-2 text-3xl font-bold text-amber-700"
-                  }
+                  className={`mt-2 text-3xl font-bold ${
+                    getStatusTone(selectedArea.gapToStateAveragePct) === "positive"
+                      ? "text-green-700"
+                      : "text-red-700"
+                  }`}
                 >
                   {selectedArea.gapToStateAveragePct !== null
                     ? `${selectedArea.gapToStateAveragePct >= 0 ? "+" : ""}${selectedArea.gapToStateAveragePct.toFixed(1)}%`
@@ -460,11 +538,12 @@ export function Dashboard() {
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
                 <p className="text-sm font-semibold text-slate-500">vs 95% Target</p>
                 <p
-                  className={
-                    selectedArea.fullyVaccinatedPct !== null && selectedArea.fullyVaccinatedPct >= 95
-                      ? "mt-2 text-3xl font-bold text-green-700"
-                      : "mt-2 text-3xl font-bold text-red-700"
-                  }
+                  className={`mt-2 text-3xl font-bold ${
+                    getStatusTone(selectedArea.fullyVaccinatedPct !== null ? selectedArea.fullyVaccinatedPct - 95 : null) ===
+                    "positive"
+                      ? "text-green-700"
+                      : "text-red-700"
+                  }`}
                 >
                   {selectedArea.fullyVaccinatedPct !== null
                     ? `${selectedArea.fullyVaccinatedPct - 95 >= 0 ? "+" : ""}${(selectedArea.fullyVaccinatedPct - 95).toFixed(1)}%`
