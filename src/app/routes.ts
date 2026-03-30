@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router";
 import { Home } from "./pages/Home";
 import { Dashboard } from "./pages/Dashboard";
 import { Compare } from "./pages/Compare";
-import { Map } from "./pages/Map";
+import { CoverageMap } from "./pages/Map";
 import { Learn } from "./pages/Learn";
 import { Layout } from "./components/Layout";
 
@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
       { index: true, Component: Home },
       { path: "dashboard", Component: Dashboard },
       { path: "compare", Component: Compare },
-      { path: "map", Component: Map },
+      { path: "map", Component: CoverageMap },
       { path: "learn", Component: Learn },
     ],
   },

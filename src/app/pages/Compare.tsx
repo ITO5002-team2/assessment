@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router";
 import {
   AlertCircle,
   CheckCircle,
-  GitCompare,
   Target,
   TrendingDown,
   TrendingUp,
@@ -12,7 +11,6 @@ import {
 import { FilterPanel } from "../components/FilterPanel";
 import { InsightCallout } from "../components/InsightCallout";
 import { PageContainer } from "../components/PageContainer";
-import { PageHero } from "../components/PageHero";
 import { SectionCard } from "../components/SectionCard";
 import {
   AGE_GROUPS,
@@ -384,12 +382,13 @@ export function Compare() {
 
   return (
     <PageContainer>
-      <PageHero
-        title="Compare Areas"
-        description="Review selected regions side by side to see which area is strongest, weakest, and furthest from the 95% target."
-        icon={GitCompare}
-        className="bg-gradient-to-r from-blue-600 to-purple-600"
-      />
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Compare Areas</h1>
+        <p className="mt-2 max-w-3xl text-sm text-slate-600">
+          Compare vaccination coverage across selected regions and cohorts to see which area is strongest, weakest, and
+          furthest from the 95% target.
+        </p>
+      </div>
 
       <FilterPanel>
         <h2 className="mb-6 text-2xl font-bold text-slate-900">Select Areas</h2>

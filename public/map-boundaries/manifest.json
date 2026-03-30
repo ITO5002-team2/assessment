@@ -1,0 +1,38 @@
+{
+  "NSW": {
+    "file": "/map-boundaries/NSW.geojson",
+    "featureCount": 92
+  },
+  "VIC": {
+    "file": "/map-boundaries/VIC.geojson",
+    "featureCount": 66
+  },
+  "QLD": {
+    "file": "/map-boundaries/QLD.geojson",
+    "featureCount": 82
+  },
+  "SA": {
+    "file": "/map-boundaries/SA.geojson",
+    "featureCount": 28
+  },
+  "WA": {
+    "file": "/map-boundaries/WA.geojson",
+    "featureCount": 34
+  },
+  "TAS": {
+    "file": "/map-boundaries/TAS.geojson",
+    "featureCount": 15
+  },
+  "NT": {
+    "file": "/map-boundaries/NT.geojson",
+    "featureCount": 9
+  },
+  "ACT": {
+    "file": "/map-boundaries/ACT.geojson",
+    "featureCount": 10
+  },
+  "OT": {
+    "file": "/map-boundaries/OT.geojson",
+    "featureCount": 4
+  }
+}
