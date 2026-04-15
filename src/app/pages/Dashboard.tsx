@@ -266,6 +266,37 @@ export function Dashboard() {
         </div>
       </FilterPanel>
 
+      <InsightCallout
+        title="Plain-Language Summary"
+        icon={AlertCircle}
+        className="mb-6 rounded-3xl border-l-4 border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 p-5 shadow-sm"
+        iconClassName="hidden"
+      >
+        <div className="text-[15px] leading-7 text-slate-700">
+          <p>
+            {selectedArea?.fullyVaccinatedPct !== null && selectedArea?.fullyVaccinatedPct !== undefined
+              ? (
+                <>
+                  <strong className="text-slate-900">{selectedArea.sa3Name}</strong> has a vaccination coverage rate of{" "}
+                  <strong>{selectedArea.fullyVaccinatedPct.toFixed(1)}%</strong>, which is{" "}
+                  <strong>
+                    {selectedArea.gapToStateAveragePct !== null && selectedArea.gapToStateAveragePct >= 0 ? "at or above" : "below"} the
+                    state average
+                  </strong>{" "}
+                  of {selectedArea.stateAveragePct?.toFixed(1)}% for {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} children.
+                </>
+              )
+              : (
+                <>
+                  Coverage is not currently available for <strong className="text-slate-900">{selectedArea?.sa3Name ?? "the selected area"}</strong>. You can keep the
+                  same state selected and choose another region to continue your review.
+                </>
+              )}{" "}
+            To reach herd immunity thresholds, coverage rates of 95% or higher are recommended for most childhood vaccines.
+          </p>
+        </div>
+      </InsightCallout>
+
       {/* Summary Cards */}
       <div className="mb-6 grid gap-6 md:grid-cols-3">
         <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-xl">
@@ -583,36 +614,6 @@ export function Dashboard() {
           </div>
         )}
       </SectionCard>
-
-      {/* Insight Box */}
-      <InsightCallout
-        title="Plain-Language Summary"
-        icon={AlertCircle}
-        className="mb-6 rounded-2xl border-l-4 border-blue-500 bg-blue-50 p-6"
-        iconClassName="text-blue-600"
-      >
-        <p>
-          {selectedArea?.fullyVaccinatedPct !== null && selectedArea?.fullyVaccinatedPct !== undefined
-            ? (
-              <>
-                <strong>{selectedArea.sa3Name}</strong> has a vaccination coverage rate of{" "}
-                <strong>{selectedArea.fullyVaccinatedPct.toFixed(1)}%</strong>, which is{" "}
-                <strong>
-                  {selectedArea.gapToStateAveragePct !== null && selectedArea.gapToStateAveragePct >= 0 ? "at or above" : "below"} the
-                  state average
-                </strong>{" "}
-                of {selectedArea.stateAveragePct?.toFixed(1)}% for {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} children.
-              </>
-            )
-            : (
-              <>
-                Coverage is not currently available for <strong>{selectedArea?.sa3Name ?? "the selected area"}</strong>. You can keep the
-                same state selected and choose another region to continue your review.
-              </>
-            )}{" "}
-          To reach herd immunity thresholds, coverage rates of 95% or higher are recommended for most childhood vaccines.
-        </p>
-      </InsightCallout>
 
       {/* Action Buttons */}
       <div className="flex flex-wrap justify-center gap-4">

@@ -467,13 +467,33 @@ export function Compare() {
         </div>
       </FilterPanel>
 
-      <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-3 text-sm text-blue-900">
-        <span className="rounded-full bg-white px-3 py-1 font-semibold text-blue-700 shadow-sm">Context</span>
-        <p className="font-medium">
-          Comparing <span className="font-bold">{AGE_GROUP_LABELS[selectedAgeGroup]}</span> coverage across selected{" "}
-          {stateOptions.find((state) => state.code === selectedState)?.name ?? "state"} areas.
-        </p>
-      </div>
+      <InsightCallout
+        title="Plain-Language Summary"
+        icon={AlertCircle}
+        className="mb-8 rounded-3xl border-l-4 border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 p-5 shadow-sm"
+        iconClassName="hidden"
+      >
+        <div className="text-[15px] leading-7 text-slate-700">
+          {highestCoverageArea && lowestCoverageArea ? (
+            <p>
+              <strong className="text-slate-900">{highestCoverageArea.sa3Name}</strong> leads this comparison at{" "}
+              <strong>{highestCoverageArea.fullyVaccinatedPct?.toFixed(1)}%</strong>;{" "}
+              <strong className="text-slate-900">{lowestCoverageArea.sa3Name}</strong> is furthest from 95% and would need about{" "}
+              <strong>{lowestCoverageArea.childrenNeededToTarget.toLocaleString()}</strong> more vaccinated children to reach it.
+            </p>
+          ) : highestCoverageArea ? (
+            <p>
+              <strong className="text-slate-900">{highestCoverageArea.sa3Name}</strong> leads this comparison at{" "}
+              <strong>{highestCoverageArea.fullyVaccinatedPct?.toFixed(1)}%</strong>.
+            </p>
+          ) : lowestCoverageArea ? (
+            <p>
+              <strong className="text-slate-900">{lowestCoverageArea.sa3Name}</strong> is furthest from 95% and would need about{" "}
+              <strong>{lowestCoverageArea.childrenNeededToTarget.toLocaleString()}</strong> more vaccinated children to reach it.
+            </p>
+          ) : null}
+        </div>
+      </InsightCallout>
 
       <SectionCard className="mb-8 p-8">
         <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -853,27 +873,6 @@ export function Compare() {
         </div>
       </SectionCard>
 
-      <InsightCallout
-        title="Key Takeaway"
-        icon={AlertCircle}
-        className="rounded-3xl border-l-4 border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50"
-        iconClassName="hidden"
-      >
-        <div className="space-y-2">
-          {highestCoverageArea ? (
-            <p className="text-slate-700">
-              <strong className="text-slate-900">{highestCoverageArea.sa3Name}</strong> is currently strongest in this comparison at{" "}
-              <strong>{highestCoverageArea.fullyVaccinatedPct?.toFixed(1)}%</strong>.
-            </p>
-          ) : null}
-          {lowestCoverageArea ? (
-            <p className="text-slate-700">
-              <strong className="text-slate-900">{lowestCoverageArea.sa3Name}</strong> is furthest from target and would need an estimated{" "}
-              <strong>{lowestCoverageArea.childrenNeededToTarget.toLocaleString()}</strong> additional children to reach 95%.
-            </p>
-          ) : null}
-        </div>
-      </InsightCallout>
     </PageContainer>
   );
 }

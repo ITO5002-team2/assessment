@@ -423,6 +423,47 @@ export function CoverageMap() {
         </div>
       </FilterPanel>
 
+      <InsightCallout
+        title="Plain-Language Summary"
+        icon={AlertCircle}
+        className="mb-6 rounded-3xl border-l-4 border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 p-5 shadow-sm"
+        iconClassName="hidden"
+      >
+        <div className="text-[15px] leading-7 text-slate-700">
+          {!selectedInsight || selectedInsight.fullyVaccinatedPct === null ? (
+            <p>
+              Viewing <span className="font-semibold text-slate-900">{selectedStateName}</span> for{" "}
+              <span className="font-semibold text-slate-900">{AGE_GROUP_LABELS[selectedAgeGroup]}</span>. Select a shaded SA3 area
+              to view coverage, target gap, and state-average context.
+            </p>
+          ) : (
+            <p>
+              <strong className="text-slate-900">{selectedInsight.sa3Name}</strong> has a vaccination coverage rate of{" "}
+              <strong>{selectedInsight.fullyVaccinatedPct.toFixed(1)}%</strong>, which is{" "}
+              <strong>
+                {selectedInsight.gapToStateAveragePct !== null && selectedInsight.gapToStateAveragePct >= 0 ? "at or above" : "below"} the
+                state average
+              </strong>{" "}
+              of {selectedInsight.stateAveragePct?.toFixed(1)}% for {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} children.{" "}
+              {selectedInsight.fullyVaccinatedPct >= 95 ? (
+                <>This area is meeting the 95% target.</>
+              ) : (
+                <>
+                  It is <strong>{Math.abs(selectedInsight.fullyVaccinatedPct - 95).toFixed(1)}%</strong> below the 95% target and would
+                  need about <strong>{childrenToTarget.toLocaleString()}</strong> more children vaccinated to reach it.
+                </>
+              )}{" "}
+              {lowestArea ? (
+                <>
+                  The lowest mapped area in this state is <strong className="text-slate-900">{lowestArea.sa3Name}</strong> at{" "}
+                  <strong>{lowestArea.fullyVaccinatedPct.toFixed(1)}%</strong>.
+                </>
+              ) : null}
+            </p>
+          )}
+        </div>
+      </InsightCallout>
+
       <SectionCard className="mb-8 p-8">
         <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
@@ -653,44 +694,6 @@ export function CoverageMap() {
         </div>
       </SectionCard>
 
-      <InsightCallout
-        title="Plain-Language Summary"
-        icon={AlertCircle}
-        className="mb-6 rounded-2xl border-l-4 border-blue-500 bg-blue-50 p-6"
-        iconClassName="text-blue-600"
-      >
-        {!selectedInsight || selectedInsight.fullyVaccinatedPct === null ? (
-          <p>
-            Viewing <span className="font-semibold text-slate-900">{selectedStateName}</span> for{" "}
-            <span className="font-semibold text-slate-900">{AGE_GROUP_LABELS[selectedAgeGroup]}</span>. Select a shaded SA3 area
-            to view coverage, target gap, and state-average context.
-          </p>
-        ) : (
-          <p>
-            <strong>{selectedInsight.sa3Name}</strong> has a vaccination coverage rate of{" "}
-            <strong>{selectedInsight.fullyVaccinatedPct.toFixed(1)}%</strong>, which is{" "}
-            <strong>
-              {selectedInsight.gapToStateAveragePct !== null && selectedInsight.gapToStateAveragePct >= 0 ? "at or above" : "below"} the
-              state average
-            </strong>{" "}
-            of {selectedInsight.stateAveragePct?.toFixed(1)}% for {AGE_GROUP_LABELS[selectedAgeGroup].toLowerCase()} children.{" "}
-            {selectedInsight.fullyVaccinatedPct >= 95 ? (
-              <>This area is meeting the 95% target.</>
-            ) : (
-              <>
-                It is <strong>{Math.abs(selectedInsight.fullyVaccinatedPct - 95).toFixed(1)}%</strong> below the 95% target and would
-                need about <strong>{childrenToTarget.toLocaleString()}</strong> more children vaccinated to reach it.
-              </>
-            )}{" "}
-            {lowestArea ? (
-              <>
-                The lowest mapped area in this state is <strong>{lowestArea.sa3Name}</strong> at{" "}
-                <strong>{lowestArea.fullyVaccinatedPct.toFixed(1)}%</strong>.
-              </>
-            ) : null}
-          </p>
-        )}
-      </InsightCallout>
     </PageContainer>
   );
 }
