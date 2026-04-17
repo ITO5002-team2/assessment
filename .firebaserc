@@ -7,6 +7,9 @@
       "hosting": {
         "iter1": [
           "vacc-coverage-dash-iter1-2026"
+        ],
+        "iter2": [
+          "vacc-coverage-dash-iter2-2026"
         ]
       }
     }
