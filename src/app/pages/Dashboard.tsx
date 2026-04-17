@@ -4,6 +4,7 @@ import { Target, Users, TrendingUp, TrendingDown, BarChart3, TableProperties, Al
 import { FilterPanel } from "../components/FilterPanel";
 import { InsightCallout } from "../components/InsightCallout";
 import { PageContainer } from "../components/PageContainer";
+import { SearchableSelect, type SearchableSelectOption } from "../components/SearchableSelect";
 import { SectionCard } from "../components/SectionCard";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import {
@@ -27,6 +28,16 @@ const AGE_GROUP_LABELS: Record<AgeGroup, string> = {
 const AGE_GROUP_VALUES_BY_LABEL = Object.fromEntries(
   Object.entries(AGE_GROUP_LABELS).map(([value, label]) => [label, value]),
 ) as Record<string, AgeGroup>;
+
+const STATE_SELECT_OPTIONS: SearchableSelectOption[] = stateOptions.map((state) => ({
+  value: state.code,
+  label: state.name,
+}));
+
+const AGE_GROUP_SELECT_OPTIONS: SearchableSelectOption[] = AGE_GROUPS.map((ageGroup) => ({
+  value: ageGroup,
+  label: AGE_GROUP_LABELS[ageGroup],
+}));
 
 function isStateCode(value: string | null): value is StateCode {
   return stateOptions.some((state) => state.code === value);
@@ -115,6 +126,15 @@ export function Dashboard() {
   const initialRegion =
     regions.some((region) => region.sa3Code === searchParams.get("region")) ? searchParams.get("region") ?? "" : fallbackRegion;
   const [selectedRegion, setSelectedRegion] = useState(initialRegion);
+  const regionSelectOptions = useMemo<SearchableSelectOption[]>(
+    () =>
+      regions.map((region) => ({
+        value: region.sa3Code,
+        label: region.sa3Name,
+        keywords: [region.stateName, region.sa3Code],
+      })),
+    [regions],
+  );
 
   const selectedArea = getAreaInsightByCode({
     sa3Code: selectedRegion,
@@ -223,45 +243,39 @@ export function Dashboard() {
         <div className="grid gap-6 md:grid-cols-3">
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
-            <select
+            <SearchableSelect
               value={selectedState}
-              onChange={(event) => handleStateChange(event.target.value as StateCode)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              {stateOptions.map((state) => (
-                <option key={state.code} value={state.code}>
-                  {state.name}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => handleStateChange(value as StateCode)}
+              options={STATE_SELECT_OPTIONS}
+              placeholder="Select a state"
+              searchPlaceholder="Search states..."
+              emptyMessage="No state found."
+              triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+            />
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">Region</label>
-            <select
+            <SearchableSelect
               value={selectedRegion}
-              onChange={(event) => handleRegionChange(event.target.value)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              {regions.map((region) => (
-                <option key={region.sa3Code} value={region.sa3Code}>
-                  {region.sa3Name}
-                </option>
-              ))}
-            </select>
+              onChange={handleRegionChange}
+              options={regionSelectOptions}
+              placeholder="Select a region"
+              searchPlaceholder="Search regions..."
+              emptyMessage="No region found."
+              triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+            />
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">Age Group</label>
-            <select
-              value={AGE_GROUP_LABELS[selectedAgeGroup]}
-              onChange={(event) => setSelectedAgeGroup(AGE_GROUP_VALUES_BY_LABEL[event.target.value])}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              {AGE_GROUPS.map((ageGroup) => (
-                <option key={ageGroup} value={AGE_GROUP_LABELS[ageGroup]}>
-                  {AGE_GROUP_LABELS[ageGroup]}
-                </option>
-              ))}
-            </select>
+            <SearchableSelect
+              value={selectedAgeGroup}
+              onChange={(value) => setSelectedAgeGroup(value as AgeGroup)}
+              options={AGE_GROUP_SELECT_OPTIONS}
+              placeholder="Select an age group"
+              searchPlaceholder="Search age groups..."
+              emptyMessage="No age group found."
+              triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+            />
           </div>
         </div>
       </FilterPanel>

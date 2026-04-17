@@ -12,6 +12,7 @@ import {
 import { FilterPanel } from "../components/FilterPanel";
 import { InsightCallout } from "../components/InsightCallout";
 import { PageContainer } from "../components/PageContainer";
+import { SearchableSelect, type SearchableSelectOption } from "../components/SearchableSelect";
 import { SectionCard } from "../components/SectionCard";
 
 const AGE_GROUP_LABELS: Record<AgeGroup, string> = {
@@ -19,6 +20,16 @@ const AGE_GROUP_LABELS: Record<AgeGroup, string> = {
   "2 Year olds": "24 months",
   "5 Year olds": "5 years",
 };
+
+const STATE_SELECT_OPTIONS: SearchableSelectOption[] = stateOptions.map((state) => ({
+  value: state.code,
+  label: state.name,
+}));
+
+const AGE_GROUP_SELECT_OPTIONS: SearchableSelectOption[] = AGE_GROUPS.map((ageGroup) => ({
+  value: ageGroup,
+  label: AGE_GROUP_LABELS[ageGroup],
+}));
 
 type BoundaryGeometry = {
   type: "Polygon" | "MultiPolygon";
@@ -394,31 +405,27 @@ export function CoverageMap() {
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
-            <select
+            <SearchableSelect
               value={selectedState}
-              onChange={(event) => setSelectedState(event.target.value as StateCode)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-100"
-            >
-              {stateOptions.map((state) => (
-                <option key={state.code} value={state.code}>
-                  {state.name}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => setSelectedState(value as StateCode)}
+              options={STATE_SELECT_OPTIONS}
+              placeholder="Select a state"
+              searchPlaceholder="Search states..."
+              emptyMessage="No state found."
+              triggerClassName="focus-visible:border-purple-500 focus-visible:ring-4 focus-visible:ring-purple-100"
+            />
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">Age Group</label>
-            <select
+            <SearchableSelect
               value={selectedAgeGroup}
-              onChange={(event) => setSelectedAgeGroup(event.target.value as AgeGroup)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-100"
-            >
-              {AGE_GROUPS.map((ageGroup) => (
-                <option key={ageGroup} value={ageGroup}>
-                  {AGE_GROUP_LABELS[ageGroup]}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => setSelectedAgeGroup(value as AgeGroup)}
+              options={AGE_GROUP_SELECT_OPTIONS}
+              placeholder="Select an age group"
+              searchPlaceholder="Search age groups..."
+              emptyMessage="No age group found."
+              triggerClassName="focus-visible:border-purple-500 focus-visible:ring-4 focus-visible:ring-purple-100"
+            />
           </div>
         </div>
       </FilterPanel>

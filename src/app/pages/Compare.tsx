@@ -11,6 +11,7 @@ import {
 import { FilterPanel } from "../components/FilterPanel";
 import { InsightCallout } from "../components/InsightCallout";
 import { PageContainer } from "../components/PageContainer";
+import { SearchableSelect, type SearchableSelectOption } from "../components/SearchableSelect";
 import { SectionCard } from "../components/SectionCard";
 import {
   AGE_GROUPS,
@@ -33,6 +34,16 @@ const AGE_GROUP_LABELS: Record<AgeGroup, string> = {
 const AGE_GROUP_VALUES_BY_LABEL = Object.fromEntries(
   Object.entries(AGE_GROUP_LABELS).map(([value, label]) => [label, value]),
 ) as Record<string, AgeGroup>;
+
+const STATE_SELECT_OPTIONS: SearchableSelectOption[] = stateOptions.map((state) => ({
+  value: state.code,
+  label: state.name,
+}));
+
+const AGE_GROUP_SELECT_OPTIONS: SearchableSelectOption[] = AGE_GROUPS.map((ageGroup) => ({
+  value: ageGroup,
+  label: AGE_GROUP_LABELS[ageGroup],
+}));
 
 const ANTIGEN_CONFIG: Record<
   AgeGroup,
@@ -252,6 +263,37 @@ export function Compare() {
     return false;
   }
 
+  const regionOptionsByField = useMemo(
+    () => ({
+      area1: regions.map((region) => ({
+        value: region.sa3Code,
+        label: region.sa3Name,
+        keywords: [region.stateName, region.sa3Code],
+        disabled: isRegionDisabled(region.sa3Code, "area1"),
+      })),
+      area2: regions.map((region) => ({
+        value: region.sa3Code,
+        label: region.sa3Name,
+        keywords: [region.stateName, region.sa3Code],
+        disabled: isRegionDisabled(region.sa3Code, "area2"),
+      })),
+      area3: [
+        {
+          value: "",
+          label: "-- Select --",
+          keywords: ["clear", "none", "optional"],
+        },
+        ...regions.map((region) => ({
+          value: region.sa3Code,
+          label: region.sa3Name,
+          keywords: [region.stateName, region.sa3Code],
+          disabled: isRegionDisabled(region.sa3Code, "area3"),
+        })),
+      ],
+    }),
+    [regions, area1, area2, area3],
+  );
+
   const stateSummary = getCoverageSummaryForState({
     stateCode: selectedState,
     ageGroup: selectedAgeGroup,
@@ -395,74 +437,63 @@ export function Compare() {
         <div className="grid gap-6 lg:grid-cols-5">
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
-            <select
+            <SearchableSelect
               value={selectedState}
-              onChange={(event) => handleStateChange(event.target.value as StateCode)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              {stateOptions.map((state) => (
-                <option key={state.code} value={state.code}>
-                  {state.name}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => handleStateChange(value as StateCode)}
+              options={STATE_SELECT_OPTIONS}
+              placeholder="Select a state"
+              searchPlaceholder="Search states..."
+              emptyMessage="No state found."
+              triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+            />
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">Area 1</label>
-            <select
+            <SearchableSelect
               value={area1}
-              onChange={(event) => handleAreaChange("area1", event.target.value)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              {regions.map((region) => (
-                <option key={region.sa3Code} value={region.sa3Code} disabled={isRegionDisabled(region.sa3Code, "area1")}>
-                  {region.sa3Name}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => handleAreaChange("area1", value)}
+              options={regionOptionsByField.area1}
+              placeholder="Select area 1"
+              searchPlaceholder="Search regions..."
+              emptyMessage="No region found."
+              triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+            />
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">Area 2</label>
-            <select
+            <SearchableSelect
               value={area2}
-              onChange={(event) => handleAreaChange("area2", event.target.value)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              {regions.map((region) => (
-                <option key={region.sa3Code} value={region.sa3Code} disabled={isRegionDisabled(region.sa3Code, "area2")}>
-                  {region.sa3Name}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => handleAreaChange("area2", value)}
+              options={regionOptionsByField.area2}
+              placeholder="Select area 2"
+              searchPlaceholder="Search regions..."
+              emptyMessage="No region found."
+              triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+            />
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">Area 3 (Optional)</label>
-            <select
+            <SearchableSelect
               value={area3}
-              onChange={(event) => handleAreaChange("area3", event.target.value)}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              <option value="">-- Select --</option>
-              {regions.map((region) => (
-                <option key={region.sa3Code} value={region.sa3Code} disabled={isRegionDisabled(region.sa3Code, "area3")}>
-                  {region.sa3Name}
-                </option>
-              ))}
-            </select>
+              onChange={(value) => handleAreaChange("area3", value)}
+              options={regionOptionsByField.area3}
+              placeholder="-- Select --"
+              searchPlaceholder="Search regions..."
+              emptyMessage="No region found."
+              triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+            />
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-slate-700">Age Group</label>
-            <select
-              value={AGE_GROUP_LABELS[selectedAgeGroup]}
-              onChange={(event) => handleAgeGroupChange(AGE_GROUP_VALUES_BY_LABEL[event.target.value])}
-              className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-            >
-              {AGE_GROUPS.map((ageGroup) => (
-                <option key={ageGroup} value={AGE_GROUP_LABELS[ageGroup]}>
-                  {AGE_GROUP_LABELS[ageGroup]}
-                </option>
-              ))}
-            </select>
+            <SearchableSelect
+              value={selectedAgeGroup}
+              onChange={(value) => handleAgeGroupChange(value as AgeGroup)}
+              options={AGE_GROUP_SELECT_OPTIONS}
+              placeholder="Select an age group"
+              searchPlaceholder="Search age groups..."
+              emptyMessage="No age group found."
+              triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+            />
           </div>
         </div>
       </FilterPanel>

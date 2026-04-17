@@ -3,18 +3,42 @@ import { Link } from "react-router";
 import { Shield, Database, BarChart2, ArrowRight, ExternalLink, MapPinned, GitCompare, BookOpen, LayoutDashboard } from "lucide-react";
 import { PageContainer } from "../components/PageContainer";
 import { PageHero } from "../components/PageHero";
+import { SearchableSelect, type SearchableSelectOption } from "../components/SearchableSelect";
 import { SectionCard } from "../components/SectionCard";
 import { getRegionsForState, stateOptions, type StateCode } from "../data/vaccinationData";
+
+const STATE_SELECT_OPTIONS: SearchableSelectOption[] = stateOptions.map((state) => ({
+  value: state.code,
+  label: state.name,
+}));
 
 export function Home() {
   const [dashboardState, setDashboardState] = useState<StateCode>("VIC");
   const dashboardRegions = useMemo(() => getRegionsForState(dashboardState), [dashboardState]);
   const [dashboardRegion, setDashboardRegion] = useState(() => dashboardRegions[0]?.sa3Code ?? "");
+  const dashboardRegionOptions = useMemo<SearchableSelectOption[]>(
+    () =>
+      dashboardRegions.map((region) => ({
+        value: region.sa3Code,
+        label: region.sa3Name,
+        keywords: [region.stateName, region.sa3Code],
+      })),
+    [dashboardRegions],
+  );
 
   const [compareState, setCompareState] = useState<StateCode>("VIC");
   const compareRegions = useMemo(() => getRegionsForState(compareState), [compareState]);
   const [compareAreaOne, setCompareAreaOne] = useState(() => compareRegions[0]?.sa3Code ?? "");
   const [compareAreaTwo, setCompareAreaTwo] = useState(() => compareRegions[1]?.sa3Code ?? compareRegions[0]?.sa3Code ?? "");
+  const compareRegionOptions = useMemo<SearchableSelectOption[]>(
+    () =>
+      compareRegions.map((region) => ({
+        value: region.sa3Code,
+        label: region.sa3Name,
+        keywords: [region.stateName, region.sa3Code],
+      })),
+    [compareRegions],
+  );
 
   function handleDashboardStateChange(nextState: StateCode) {
     setDashboardState(nextState);
@@ -104,31 +128,27 @@ export function Home() {
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
-                <select
+                <SearchableSelect
                   value={dashboardState}
-                  onChange={(event) => handleDashboardStateChange(event.target.value as StateCode)}
-                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-                >
-                  {stateOptions.map((state) => (
-                    <option key={state.code} value={state.code}>
-                      {state.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(value) => handleDashboardStateChange(value as StateCode)}
+                  options={STATE_SELECT_OPTIONS}
+                  placeholder="Select a state"
+                  searchPlaceholder="Search states..."
+                  emptyMessage="No state found."
+                  triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+                />
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">Region</label>
-                <select
+                <SearchableSelect
                   value={dashboardRegion}
-                  onChange={(event) => setDashboardRegion(event.target.value)}
-                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100"
-                >
-                  {dashboardRegions.map((region) => (
-                    <option key={region.sa3Code} value={region.sa3Code}>
-                      {region.sa3Name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setDashboardRegion}
+                  options={dashboardRegionOptions}
+                  placeholder="Select a region"
+                  searchPlaceholder="Search regions..."
+                  emptyMessage="No region found."
+                  triggerClassName="focus-visible:border-blue-500 focus-visible:ring-4 focus-visible:ring-blue-100"
+                />
               </div>
             </div>
             <div className="mt-6">
@@ -155,53 +175,45 @@ export function Home() {
             <div className="grid gap-4 md:grid-cols-3">
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">State</label>
-                <select
+                <SearchableSelect
                   value={compareState}
-                  onChange={(event) => handleCompareStateChange(event.target.value as StateCode)}
-                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
-                >
-                  {stateOptions.map((state) => (
-                    <option key={state.code} value={state.code}>
-                      {state.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(value) => handleCompareStateChange(value as StateCode)}
+                  options={STATE_SELECT_OPTIONS}
+                  placeholder="Select a state"
+                  searchPlaceholder="Search states..."
+                  emptyMessage="No state found."
+                  triggerClassName="focus-visible:border-emerald-500 focus-visible:ring-4 focus-visible:ring-emerald-100"
+                />
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">Area 1</label>
-                <select
+                <SearchableSelect
                   value={compareAreaOne}
-                  onChange={(event) => setCompareAreaOne(event.target.value)}
-                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
-                >
-                  {compareRegions.map((region) => (
-                    <option
-                      key={region.sa3Code}
-                      value={region.sa3Code}
-                      disabled={isCompareRegionDisabled(region.sa3Code, "area1")}
-                    >
-                      {region.sa3Name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setCompareAreaOne}
+                  options={compareRegionOptions.map((region) => ({
+                    ...region,
+                    disabled: isCompareRegionDisabled(region.value, "area1"),
+                  }))}
+                  placeholder="Select area 1"
+                  searchPlaceholder="Search regions..."
+                  emptyMessage="No region found."
+                  triggerClassName="focus-visible:border-emerald-500 focus-visible:ring-4 focus-visible:ring-emerald-100"
+                />
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">Area 2</label>
-                <select
+                <SearchableSelect
                   value={compareAreaTwo}
-                  onChange={(event) => setCompareAreaTwo(event.target.value)}
-                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900 transition-all focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100"
-                >
-                  {compareRegions.map((region) => (
-                    <option
-                      key={region.sa3Code}
-                      value={region.sa3Code}
-                      disabled={isCompareRegionDisabled(region.sa3Code, "area2")}
-                    >
-                      {region.sa3Name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setCompareAreaTwo}
+                  options={compareRegionOptions.map((region) => ({
+                    ...region,
+                    disabled: isCompareRegionDisabled(region.value, "area2"),
+                  }))}
+                  placeholder="Select area 2"
+                  searchPlaceholder="Search regions..."
+                  emptyMessage="No region found."
+                  triggerClassName="focus-visible:border-emerald-500 focus-visible:ring-4 focus-visible:ring-emerald-100"
+                />
               </div>
             </div>
             <div className="mt-6">
